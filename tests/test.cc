@@ -8,8 +8,7 @@
 #include <mylibrary/example.h>
 
 
-TEST_CASE("Random sanity test", "[random]") {
+TEST_CASE("Get Correct Score", "[player]") {
   const float random = cinder::randFloat();
-  REQUIRE(0. <= random);
   REQUIRE(random <= 1.);
 }
