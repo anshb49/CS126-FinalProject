@@ -44,6 +44,15 @@ int Player::GetYPosition() {
   return current_y;
 }
 
+void Player::SetXPosition(int loc) {
+  current_x = loc;
+}
+
+void Player::SetYPosition(int loc) {
+  current_y = loc;
+}
+
+
 
 
 

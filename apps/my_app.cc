@@ -8,6 +8,7 @@
 #include <cinder/Vector.h>
 #include <cinder/gl/draw.h>
 #include <cinder/gl/gl.h>
+#include <gflags/gflags.h>
 
 #include <algorithm>
 #include <chrono>
@@ -16,22 +17,34 @@
 
 #include "mylibrary/player.h"
 
+
 Player user;
 
 cinder::gl::Texture2dRef image;
 auto img = loadImage(cinder::app::loadAsset("mario_pic.png"));
-
+const char kDbPath[] = "test_scoreboard.db";
 
 namespace myapp {
 
 using cinder::app::KeyEvent;
 
-MyApp::MyApp() {}
+
+DECLARE_string(name);
+
+MyApp::MyApp() :
+    leaderboard{cinder::app::getAssetPath(kDbPath).string()},
+    user_name{FLAGS_name}
+    {}
+
 
 void MyApp::setup() {
 }
 
-void MyApp::update() {}
+void MyApp::update() {
+
+  leaderboard.AddScoreToLeaderBoard(user_name, 123);
+
+}
 
 void MyApp::draw() {
   cinder::gl::clear();

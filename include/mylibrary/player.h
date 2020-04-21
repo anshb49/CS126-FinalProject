@@ -6,11 +6,15 @@
 #define FINALPROJECT_PLAYER_H
 
 class Player {
+
+
+
  private:
   int current_score = 0;
   int current_x;
   int current_y;
  public:
+
 
   Player() {
     current_x = 0;
@@ -25,6 +29,9 @@ class Player {
   void MoveLeft();
   void MoveUp();
   void MoveDown();
+
+  void SetXPosition(int loc);
+  void SetYPosition(int loc);
 
 
 

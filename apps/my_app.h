@@ -4,7 +4,7 @@
 #define FINALPROJECT_APPS_MYAPP_H_
 
 #include <cinder/app/App.h>
-
+#include "mylibrary/leaderboard.h"
 
 namespace myapp {
 
@@ -18,6 +18,10 @@ class MyApp : public cinder::app::App {
 
   void DrawUser();
   void DrawBoard();
+
+ private:
+  LeaderBoard leaderboard;
+  const std::string user_name;
 };
 
 }  // namespace myapp
