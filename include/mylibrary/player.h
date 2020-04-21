@@ -5,12 +5,26 @@
 #ifndef FINALPROJECT_PLAYER_H
 #define FINALPROJECT_PLAYER_H
 
-class player {
+class Player {
  private:
   int current_score = 0;
+  int current_x;
+  int current_y;
  public:
 
+  Player() {
+    current_x = 0;
+    current_y = 0;
+  }
+
   int GetMyScore();
+  int GetXPosition();
+  int GetYPosition();
+
+  void MoveRight();
+  void MoveLeft();
+  void MoveUp();
+  void MoveDown();
 
 
 
