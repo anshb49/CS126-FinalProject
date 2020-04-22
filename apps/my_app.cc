@@ -17,12 +17,19 @@
 
 #include "mylibrary/player.h"
 
+using std::chrono::duration_cast;
+using std::chrono::seconds;
+using std::chrono::system_clock;
+
 
 Player user;
 
 cinder::gl::Texture2dRef image;
 auto img = loadImage(cinder::app::loadAsset("mario_pic.png"));
 const char kDbPath[] = "test_scoreboard.db";
+
+std::chrono::high_resolution_clock::time_point t1 = std::chrono::
+high_resolution_clock::now();
 
 namespace myapp {
 
@@ -41,8 +48,12 @@ void MyApp::setup() {
 }
 
 void MyApp::update() {
-
-  leaderboard.AddScoreToLeaderBoard(user_name, 123);
+  //Will be used when implement game over
+  std::chrono::high_resolution_clock::time_point t2 =
+      std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> time_span =
+      duration_cast<std::chrono::duration<double>>(t2 - t1);
+  leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
 
 }
 
@@ -76,10 +87,10 @@ void MyApp::keyDown(KeyEvent event) {
 void MyApp::DrawUser() {
 
   cinder::gl::color(cinder::Color(0.8, 0.5, 0.007));  // red
-  cinder::gl::drawSolidCircle({user.GetXPosition(), user.GetYPosition()}, 30);
-  //image = cinder::gl::Texture2d::create(img);
-  //cinder::Rectf drawRect( user.GetXPosition(), user.GetYPosition(), user.GetXPosition() + 40, user.GetYPosition() + 50);
-  //cinder::gl::draw(image, drawRect);
+  //cinder::gl::drawSolidCircle({user.GetXPosition(), user.GetYPosition()}, 30);
+  image = cinder::gl::Texture2d::create(img);
+  cinder::Rectf drawRect( user.GetXPosition(), user.GetYPosition(), user.GetXPosition() + 40, user.GetYPosition() + 50);
+  cinder::gl::draw(image, drawRect);
 }
 
 
