@@ -25,7 +25,7 @@ using std::chrono::system_clock;
 Player user;
 
 cinder::gl::Texture2dRef image;
-auto img = loadImage(cinder::app::loadAsset("mario_pic.png"));
+auto img = loadImage(cinder::app::loadAsset("smiley_face.png"));
 const char kDbPath[] = "test_scoreboard.db";
 
 std::chrono::high_resolution_clock::time_point t1 = std::chrono::
