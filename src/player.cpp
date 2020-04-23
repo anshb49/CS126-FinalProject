@@ -16,19 +16,38 @@
 bool is_playing = true;
 
 void Player::MoveRight() {
+
   current_x = current_x + 15;
+
+  if (current_x >= 800-20) {
+    current_x = current_x - 15;
+  }
+
 }
 
 void Player::MoveLeft() {
   current_x = current_x - 15;
+
+  if (current_x <= 0 - 10) {
+    current_x = current_x + 15;
+  }
 }
 
 void Player::MoveUp() {
+
   current_y = current_y - 15;
+
+  if (current_y >= 0) {
+    current_x = current_x + 15;
+  }
 }
 
 void Player::MoveDown() {
   current_y = current_y + 15;
+
+  if (current_y >= 800) {
+    current_x = current_x - 15;
+  }
 }
 
 

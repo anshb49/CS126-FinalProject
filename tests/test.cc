@@ -8,9 +8,13 @@
 //#include <mylibrary/example.h>
 #include <mylibrary/player.h>
 #include <mylibrary/monster.h>
+#include <mylibrary/board.h>
 
 Player user;
 Monster monster;
+
+Board board;
+
 
 TEST_CASE("Change Direction Correctly for Player") {
 
@@ -87,4 +91,80 @@ TEST_CASE("Check Correct Speed for Monster") {
     REQUIRE(is_correct_speed);
   }
 
+}
+
+
+TEST_CASE("Contains correct Number of Board positions") {
+
+
+  SECTION("Check X1 Positions") {
+    int size = board.GetX1Positions().size();
+    bool is_correct_size = size == 13;
+    REQUIRE(is_correct_size);
+  }
+
+  SECTION("Check Y1 Positions") {
+    int size = board.GetX2Positions().size();
+    bool is_correct_size = size == 13;
+    REQUIRE(is_correct_size);
+  }
+
+  SECTION("Check X2 Positions") {
+    int size = board.GetY1Positions().size();
+    bool is_correct_size = size == 13;
+    REQUIRE(is_correct_size);
+  }
+
+  SECTION("Check Y2 Positions") {
+    int size = board.GetY2Positions().size();
+    bool is_correct_size = size == 13;
+    REQUIRE(is_correct_size);
+  }
+
+}
+
+
+TEST_CASE("Check Not Going Out Of Screen Boundaries") {
+  user.SetXPosition(790);
+
+  SECTION("Check Move Right Positions") {
+    user.MoveRight();
+    int xpos = user.GetXPosition();
+    bool is_correct_pos = xpos <= 800;
+    REQUIRE(is_correct_pos);
+  }
+
+  SECTION("Check Move Left Positions") {
+    user.MoveLeft();
+    int xpos = user.GetXPosition();
+    bool is_correct_pos = xpos >= 0;
+    REQUIRE(is_correct_pos);
+  }
+
+  SECTION("Check Move Up Positions") {
+    user.MoveUp();
+    int ypos = user.GetYPosition();
+    bool is_correct_pos = ypos >= 0;
+    REQUIRE(is_correct_pos);
+  }
+
+  SECTION("Check Move Down Positions") {
+    user.MoveDown();
+    int ypos = user.GetYPosition();
+    bool is_correct_pos = ypos <= 800;
+    REQUIRE(is_correct_pos);
+  }
+
+
+}
+
+
+
+TEST_CASE("Check If Game Ended") {
+  //Check DidGameEnd Method which will use monster and user location
+}
+
+TEST_CASE("Check If Stayed Within Board") {
+  //Check That user does not have a current location that is outside of the board
+  //bounds
 }

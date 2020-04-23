@@ -101,18 +101,19 @@ void MyApp::DrawUser() {
 
 
 void MyApp::DrawBoard() {
-  cinder::gl::color(cinder::Color(1, 0, 0));  // red
-  //cinder::gl::drawSolidCircle(getWindowCenter(), 10);
-  int red =
-  cinder::gl::color(cinder::Color(0, 1, 0));
+  double red = (rand() % 255) / 255;
+  double green = (rand() % 255) / 255;
+  double blue = (rand() % 255) / 255;
+      //round((double) rand() / (1));
+  cinder::gl::color(cinder::Color(1, 1, 1));  // red
+
+
 
 
   cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
                                     350.0f,
                                     450.0f,
                                     450.0f ) );
-
-
 
 
 
