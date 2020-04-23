@@ -21,8 +21,7 @@ using std::chrono::duration_cast;
 using std::chrono::seconds;
 using std::chrono::system_clock;
 
-
-Player user;
+Player player;
 
 cinder::gl::Texture2dRef image;
 auto img = loadImage(cinder::app::loadAsset("smiley_face.png"));
@@ -66,19 +65,19 @@ void MyApp::draw() {
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
     case KeyEvent::KEY_RIGHT: {
-      user.MoveRight();
+      player.MoveRight();
       break;
     }
     case KeyEvent::KEY_LEFT: {
-      user.MoveLeft();
+      player.MoveLeft();
       break;
     }
     case KeyEvent::KEY_UP: {
-      user.MoveUp();
+      player.MoveUp();
       break;
     }
     case KeyEvent::KEY_DOWN: {
-      user.MoveDown();
+      player.MoveDown();
       break;
     }
   }
@@ -89,24 +88,124 @@ void MyApp::DrawUser() {
   cinder::gl::color(cinder::Color(0.8, 0.5, 0.007));  // red
   //cinder::gl::drawSolidCircle({user.GetXPosition(), user.GetYPosition()}, 30);
   image = cinder::gl::Texture2d::create(img);
-  cinder::Rectf drawRect( user.GetXPosition(), user.GetYPosition(), user.GetXPosition() + 40, user.GetYPosition() + 50);
+
+
+  cinder::Rectf drawRect( player.GetXPosition(),
+                          player.GetYPosition(),
+                          player.GetXPosition() + 40,
+                          player.GetYPosition() + 50);
+
   cinder::gl::draw(image, drawRect);
+
 }
 
 
 void MyApp::DrawBoard() {
   cinder::gl::color(cinder::Color(1, 0, 0));  // red
   //cinder::gl::drawSolidCircle(getWindowCenter(), 10);
-  cinder::gl::drawSolidRect( cinder::Rectf( getWindowWidth()/2-100.0f,
-                                    getWindowHeight()/2-20.0f,
-                                    getWindowWidth()/2+20.0f,
-                                    getWindowHeight()/2+20.0f ) );
+  int red =
+  cinder::gl::color(cinder::Color(0, 1, 0));
 
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
+                                    350.0f,
+                                    450.0f,
+                                    450.0f ) );
+
+
+
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 200.0f,
+                                            100.0f,
+                                            230.0f,
+                                            350.0f ) );
+
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 570.0f,
+                                            100.0f,
+                                            600.0f,
+                                            350.0f ) );
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 100.0f,
+                                            100.0f,
+                                            130.0f,
+                                            350.0f ) );
+
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 670.0f,
+                                            100.0f,
+                                            700.0f,
+                                            350.0f ) );
+
+
+
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
+                                            200.0f,
+                                            450.0f,
+                                            230.0f ) );
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
+                                            100.0f,
+                                            450.0f,
+                                            130.0f ) );
+
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
+                                            600.0f,
+                                            450.0f,
+                                            570.0f ) );
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
+                                            700.0f,
+                                            450.0f,
+                                            670.0f ) );
+
+
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 200.0f,
+                                            700.0f,
+                                            230.0f,
+                                            450.0f ) );
+
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 570.0f,
+                                            700.0f,
+                                            600.0f,
+                                            450.0f ) );
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 100.0f,
+                                            700.0f,
+                                            130.0f,
+                                            450.0f ) );
+
+
+
+  cinder::gl::drawSolidRect( cinder::Rectf( 670.0f,
+                                            700.0f,
+                                            700.0f,
+                                            450.0f ) );
+
+
+
+  /**
   cinder::gl::color(cinder::Color(0.8, 0.9, 0.5));
   cinder::gl::drawSolidRect( cinder::Rectf( getWindowWidth()-10.0f,
                                             getWindowHeight()/2-20.0f,
                                             getWindowWidth()/2+40.0f,
                                             getWindowHeight()/2+20.0f ) );
+                                            */
 }
 
 
