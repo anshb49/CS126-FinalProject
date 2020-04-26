@@ -6,3 +6,6 @@
 #define FINALPROJECT_FLASHMONSTER_H
 
 #endif  // FINALPROJECT_FLASHMONSTER_H
+
+#include "mylibrary/monster.h"
+

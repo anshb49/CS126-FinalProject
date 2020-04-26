@@ -42,7 +42,7 @@ void SetUp(App::Settings* settings) {
   vector<string> args = settings->getCommandLineArgs();
   ParseArgs(&args);
   settings->setWindowSize(kWidth, kHeight);
-  settings->setTitle("Escape");
+  settings->setTitle("ESCAPE");
 }
 
 

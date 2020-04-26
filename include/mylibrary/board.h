@@ -7,19 +7,17 @@
 
 #endif  // FINALPROJECT_BOARD_H
 
+#include <cstdlib>
+
 class Board {
 
  private:
-  vector<double> x1_pos;
-  vector<double> y1_pos;
-  vector<double> x2_pos;
-  vector<double> x2_pos;
+  int x = (rand() % 800) + 1;
+  int y = (rand() % 800) + 1;
 
  public:
-  vector<double> GetX1Positions();
-  vector<double> GetY1Positions();
-  vector<double> GetX2Positions();
-  vector<double> GetY2Positions();
+  int GetXPos();
+  int GetYPos();
 
 
 };

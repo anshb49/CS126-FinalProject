@@ -6,3 +6,8 @@
 #define FINALPROJECT_GHOSTMONSTER_H
 
 #endif  // FINALPROJECT_GHOSTMONSTER_H
+#include "mylibrary/monster.h"
+
+class GhostMonster: public Monster {
+
+};

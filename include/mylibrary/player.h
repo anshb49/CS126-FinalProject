@@ -18,7 +18,7 @@ class Player {
 
   Player() {
     current_x = 0;
-    current_y = 0;
+    current_y = 400;
   }
 
   int GetMyScore();
@@ -32,6 +32,8 @@ class Player {
 
   void SetXPosition(int loc);
   void SetYPosition(int loc);
+
+  bool CanMoveRight();
 
 
 

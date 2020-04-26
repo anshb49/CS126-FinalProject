@@ -18,6 +18,7 @@ class MyApp : public cinder::app::App {
 
   void DrawUser();
   void DrawBoard();
+  void DrawMonster();
 
  private:
   LeaderBoard leaderboard;

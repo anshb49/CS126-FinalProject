@@ -1,8 +1,12 @@
 //
 // Created by Ansh Bhalla on 4/21/20.
 //
+#include <iostream>
+#include <cstdlib>
+
 
 #include "mylibrary/monster.h"
+
 
 void Monster::MoveRight() {
   current_x = current_x + speed;
@@ -45,6 +49,24 @@ void Monster::SetSpeed(int new_speed) {
   speed = new_speed;
 }
 
-void MoveTowardsPlayer(int user_x, int user_y) {
+void Monster::MoveTowardsPlayer(int user_x, int user_y) {
   //Move Monster location based on the current Player location
+  int x_distance = user_x - current_x;
+  int y_distance = user_y - current_y;
+
+  if (abs(x_distance) >= abs(y_distance)) {
+    if (x_distance <= 0) {
+      MoveLeft();
+    } else {
+      MoveRight();
+    }
+  } else {
+    if (y_distance <= 0) {
+      MoveUp();
+    } else {
+      MoveDown();
+    }
+  }
+
+
 }

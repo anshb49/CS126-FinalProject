@@ -32,5 +32,8 @@ class Monster {
   int GetSpeed();
 
 
+  void MoveTowardsPlayer(int user_x, int user_y);
+
+
 
 };
