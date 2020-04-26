@@ -4,6 +4,8 @@
 #define FINALPROJECT_APPS_MYAPP_H_
 
 #include <cinder/app/App.h>
+#include <mylibrary/board.h>
+
 #include "mylibrary/leaderboard.h"
 
 namespace myapp {
@@ -19,6 +21,8 @@ class MyApp : public cinder::app::App {
   void DrawUser();
   void DrawBoard();
   void DrawMonster();
+
+  bool CheckIfBurned(Player current_player, vector<Board> pieces);
 
  private:
   LeaderBoard leaderboard;

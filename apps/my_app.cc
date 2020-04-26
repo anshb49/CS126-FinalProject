@@ -18,7 +18,7 @@
 
 #include "mylibrary/player.h"
 #include "mylibrary/monster.h"
-#include "mylibrary/board.h"
+
 
 using std::chrono::duration_cast;
 using std::chrono::seconds;
@@ -39,6 +39,8 @@ const char kDbPath[] = "test_scoreboard.db";
 
 std::chrono::high_resolution_clock::time_point t1 = std::chrono::
 high_resolution_clock::now();
+
+bool is_burned = false;
 
 namespace myapp {
 
@@ -64,6 +66,13 @@ void MyApp::setup() {
 
 void MyApp::update() {
   //Will be used when implement game over
+
+  is_burned = CheckIfBurned(player, board_pieces);
+
+
+  if (is_burned) {
+    std::cout << "burned in lava";
+  }
   std::chrono::high_resolution_clock::time_point t2 =
       std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> time_span =
@@ -145,8 +154,8 @@ void MyApp::DrawBoard() {
     //image = cinder::gl::Texture2d::create(wall_img);
     cinder::gl::drawSolidRect( cinder::Rectf( board_pieces[i].GetXPos(),
                                               board_pieces[i].GetYPos(),
-                                              board_pieces[i].GetXPos() + 100.0,
-                                              board_pieces[i].GetYPos() + 100) );
+                                              board_pieces[i].GetXPos() + 75.0,
+                                              board_pieces[i].GetYPos() + 75.0) );
     //cinder::gl::draw(image, drawRect);
   }
 
@@ -273,6 +282,18 @@ void MyApp::DrawBoard() {
                                             getWindowHeight()/2+20.0f ) );
                                             */
 
+}
+
+bool MyApp::CheckIfBurned(Player current_player, vector<Board> pieces) {
+  for (int i = 0; i < pieces.size(); i++) {
+    if (current_player.GetXPosition() >= pieces[i].GetXPos()
+    && current_player.GetXPosition() <= pieces[i].GetXPos() + 75.0
+    && current_player.GetYPosition() >= pieces[i].GetYPos()
+    && current_player.GetYPosition() <= pieces[i].GetYPos() + 75.0) {
+      return true;
+    }
+  }
+  return false;
 }
 
 
