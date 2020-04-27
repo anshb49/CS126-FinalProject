@@ -31,7 +31,7 @@ int lava_counter = 1;
 
 
 cinder::gl::Texture2dRef image;
-auto img = loadImage(cinder::app::loadAsset("mario_pic.png"));
+auto img = loadImage(cinder::app::loadAsset("ninja_image.png"));
 
 auto wall_img = loadImage(cinder::app::loadAsset("final_neon_wall.png"));
 
@@ -53,6 +53,8 @@ using cinder::app::KeyEvent;
 vector<Board> board_pieces;
 vector<Monster> monster_vector;
 
+const int kNumFire = 14;
+
 
 DECLARE_string(name);
 
@@ -64,7 +66,7 @@ MyApp::MyApp() :
 
 void MyApp::setup() {
   monster_vector.clear();
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < kNumFire; i++) {
     Board current_piece;
     board_pieces.push_back(current_piece);
   }
@@ -150,8 +152,8 @@ void MyApp::DrawUser() {
 
   cinder::Rectf drawRect( player.GetXPosition(),
                           player.GetYPosition(),
-                          player.GetXPosition() + 65,
-                          player.GetYPosition() + 65);
+                          player.GetXPosition() + 80,
+                          player.GetYPosition() + 80);
 
   cinder::gl::draw(image, drawRect);
 
@@ -183,28 +185,24 @@ void MyApp::DrawMonster() {
 
 void MyApp::DrawBoard() {
   auto back_texture =
-      cinder::gl::Texture::create(ci::loadImage(loadAsset("lava1.png")));
+      cinder::gl::Texture::create(ci::loadImage(loadAsset("fire1.png")));
   if (lava_counter == 1) {
     lava_counter++;
   } else if (lava_counter == 2) {
     back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava2.png")));
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("fire2.png")));
     lava_counter++;
   } else if (lava_counter == 3) {
     back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava3.png")));
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("fire3.png")));
     lava_counter++;
   } else if (lava_counter == 4) {
     back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava4.png")));
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("fire4.png")));
     lava_counter++;
   } else if (lava_counter == 5) {
     back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava5.png")));
-    lava_counter++;
-  } else if (lava_counter == 6) {
-    back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava6.png")));
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("fire5.png")));
     lava_counter = 1;
   }
 
