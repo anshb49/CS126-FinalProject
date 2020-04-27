@@ -75,6 +75,11 @@ void MyApp::setup() {
 }
 
 void MyApp::update() {
+
+  std::cout <<  "x: " << player.GetXPosition() << std::endl;
+  std::cout <<  "y: " << player.GetYPosition() << std::endl;
+
+
   //Will be used when implement game over
   std::chrono::high_resolution_clock::time_point t2 =
       std::chrono::high_resolution_clock::now();
@@ -92,12 +97,11 @@ void MyApp::update() {
 
 
   is_burned = CheckIfBurned(player, board_pieces);
-
-
-  if (is_burned) {
+  if (CheckIfBurned(player, board_pieces)) {
     std::cout << "burned in lava";
     leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
 
+    return;
   }
 
 }
@@ -105,15 +109,17 @@ void MyApp::update() {
 void MyApp::draw() {
   cinder::gl::clear();
 
+
   if (is_burned) {
     image = cinder::gl::Texture2d::create(fire_end_img);
     cinder::Rectf drawRect( 0.0f,
                             0.0f,
-                            800.0f,
-                            800.0f);
+                            1000.0f,
+                            1000.0f);
     cinder::gl::draw(image, drawRect);
     return;
   }
+
 
   DrawBackground();
   DrawUser();
@@ -143,12 +149,13 @@ void MyApp::keyDown(KeyEvent event) {
 }
 
 void MyApp::DrawUser() {
+  if (is_burned) {
+    return;
+  }
   cinder::gl::disableDepthRead();
   cinder::gl::disableDepthWrite();
 
-  //cinder::gl::drawSolidCircle({user.GetXPosition(), user.GetYPosition()}, 30);
   image = cinder::gl::Texture2d::create(img);
-
 
   cinder::Rectf drawRect( player.GetXPosition(),
                           player.GetYPosition(),
@@ -156,7 +163,6 @@ void MyApp::DrawUser() {
                           player.GetYPosition() + 80);
 
   cinder::gl::draw(image, drawRect);
-
 }
 
 void MyApp::DrawMonster() {
@@ -172,13 +178,7 @@ void MyApp::DrawMonster() {
                                               monster_vector[i].GetYPosition()},
                                              {monster_vector[i].GetXPosition() + 65,
                                               monster_vector[i].GetYPosition() + 65}));
-
-
   }
-
-
-
-
 
 }
 
@@ -219,10 +219,10 @@ void MyApp::DrawBoard() {
 
 bool MyApp::CheckIfBurned(Player current_player, vector<Board> pieces) {
   for (int i = 0; i < pieces.size(); i++) {
-    if (current_player.GetXPosition() >= pieces[i].GetXPos()
-        && current_player.GetXPosition() <= pieces[i].GetXPos() + 75.0
-        && current_player.GetYPosition() >= pieces[i].GetYPos()
-        && current_player.GetYPosition() <= pieces[i].GetYPos() + 75.0) {
+    if (current_player.GetXPosition() >= pieces[i].GetXPos() - 50.0
+        && current_player.GetXPosition() <= pieces[i].GetXPos() + 50.0
+        && current_player.GetYPosition() >= pieces[i].GetYPos() - 40.0
+        && current_player.GetYPosition() <= pieces[i].GetYPos() + 50.0) {
       return true;
     }
   }

@@ -33,6 +33,8 @@ class Player {
   void SetXPosition(int loc);
   void SetYPosition(int loc);
 
+  void SetGameOverPosition();
+
   bool CanMoveRight();
 
 

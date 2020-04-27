@@ -132,13 +132,21 @@ TEST_CASE("Check Not Going Out Of Screen Boundaries") {
 
 
 
-TEST_CASE("Check If Player Died From Lava") {
+TEST_CASE("Check Game Over Player Position") {
+  user.SetGameOverPosition();
 
+  SECTION("Check X Position") {
+    bool is_correct_position = user.GetXPosition() == -1000;
+    REQUIRE(is_correct_position);
+  }
+
+  SECTION("Check Y Position") {
+    bool is_correct_position = user.GetYPosition() == 1000;
+    REQUIRE(is_correct_position);
+  }
 }
 
 TEST_CASE("Check If Stayed Within Board") {
-  //Check That user does not have a current location that is outside of the board
-  //bounds
 
   SECTION("Stays in Right Boundary") {
     user.SetXPosition(775);
