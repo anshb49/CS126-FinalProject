@@ -4,7 +4,6 @@
 #define FINALPROJECT_APPS_MYAPP_H_
 
 #include <cinder/app/App.h>
-#include <mylibrary/board.h>
 
 #include "mylibrary/leaderboard.h"
 
@@ -21,6 +20,7 @@ class MyApp : public cinder::app::App {
   void DrawUser();
   void DrawBoard();
   void DrawMonster();
+  void DrawBackground();
 
   bool CheckIfBurned(Player current_player, vector<Board> pieces);
 

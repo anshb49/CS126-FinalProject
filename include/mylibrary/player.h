@@ -5,9 +5,9 @@
 #ifndef FINALPROJECT_PLAYER_H
 #define FINALPROJECT_PLAYER_H
 
+#include "mylibrary/board.h"
+
 class Player {
-
-
 
  private:
   int current_score = 0;
@@ -34,6 +34,7 @@ class Player {
   void SetYPosition(int loc);
 
   bool CanMoveRight();
+
 
 
 

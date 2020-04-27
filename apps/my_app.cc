@@ -27,6 +27,7 @@ using std::chrono::system_clock;
 Player player;
 Monster monster;
 
+int lava_counter = 1;
 
 
 cinder::gl::Texture2dRef image;
@@ -35,6 +36,9 @@ auto img = loadImage(cinder::app::loadAsset("mario_pic.png"));
 auto wall_img = loadImage(cinder::app::loadAsset("final_neon_wall.png"));
 
 auto monster_img = loadImage(cinder::app::loadAsset("monster_pic.png"));
+
+auto fire_end_img = loadImage(cinder::app::loadAsset("fire_gameover.png"));
+
 const char kDbPath[] = "test_scoreboard.db";
 
 std::chrono::high_resolution_clock::time_point t1 = std::chrono::
@@ -54,7 +58,7 @@ DECLARE_string(name);
 MyApp::MyApp() :
     leaderboard{cinder::app::getAssetPath(kDbPath).string()},
     user_name{FLAGS_name}
-    {}
+{}
 
 
 void MyApp::setup() {
@@ -72,19 +76,29 @@ void MyApp::update() {
 
   if (is_burned) {
     std::cout << "burned in lava";
+    std::chrono::high_resolution_clock::time_point t2 =
+        std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> time_span =
+        duration_cast<std::chrono::duration<double>>(t2 - t1);
+    leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
   }
-  std::chrono::high_resolution_clock::time_point t2 =
-      std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> time_span =
-      duration_cast<std::chrono::duration<double>>(t2 - t1);
-  leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
 
 }
 
 void MyApp::draw() {
   cinder::gl::clear();
 
+  if (is_burned) {
+    image = cinder::gl::Texture2d::create(fire_end_img);
+    cinder::Rectf drawRect( 0.0f,
+                            0.0f,
+                            800.0f,
+                            800.0f);
+    cinder::gl::draw(image, drawRect);
+    return;
+  }
 
+  DrawBackground();
   DrawUser();
   DrawBoard();
   DrawMonster();
@@ -121,8 +135,8 @@ void MyApp::DrawUser() {
 
   cinder::Rectf drawRect( player.GetXPosition(),
                           player.GetYPosition(),
-                          player.GetXPosition() + 40,
-                          player.GetYPosition() + 50);
+                          player.GetXPosition() + 65,
+                          player.GetYPosition() + 65);
 
   cinder::gl::draw(image, drawRect);
 
@@ -135,8 +149,8 @@ void MyApp::DrawMonster() {
 
   cinder::Rectf drawRect( monster.GetXPosition(),
                           monster.GetYPosition(),
-                          monster.GetXPosition() + 40,
-                          monster.GetYPosition() + 50);
+                          monster.GetXPosition() + 65,
+                          monster.GetYPosition() + 65);
 
   cinder::gl::draw(image, drawRect);
 
@@ -144,156 +158,85 @@ void MyApp::DrawMonster() {
 
 
 void MyApp::DrawBoard() {
-  double red = (rand() % 255) / 255;
-  double green = (rand() % 255) / 255;
-  double blue = (rand() % 255) / 255;
-      //round((double) rand() / (1));
-  cinder::gl::color(cinder::Color(1, 1, 1));  // red
-
-  for (int i = 0; i < board_pieces.size(); i++) {
-    //image = cinder::gl::Texture2d::create(wall_img);
-    cinder::gl::drawSolidRect( cinder::Rectf( board_pieces[i].GetXPos(),
-                                              board_pieces[i].GetYPos(),
-                                              board_pieces[i].GetXPos() + 75.0,
-                                              board_pieces[i].GetYPos() + 75.0) );
-    //cinder::gl::draw(image, drawRect);
+  auto back_texture =
+      cinder::gl::Texture::create(ci::loadImage(loadAsset("lava1.png")));
+  if (lava_counter == 1) {
+    lava_counter++;
+  } else if (lava_counter == 2) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava2.png")));
+    lava_counter++;
+  } else if (lava_counter == 3) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava3.png")));
+    lava_counter++;
+  } else if (lava_counter == 4) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava4.png")));
+    lava_counter++;
+  } else if (lava_counter == 5) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava5.png")));
+    lava_counter++;
+  } else if (lava_counter == 6) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("lava6.png")));
+    lava_counter = 1;
   }
 
+  ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
-
-
-
-  /**
-
-  image = cinder::gl::Texture2d::create(wall_img);
-  cinder::Rectf drawRect( 350.0f,
-                          350.0f,
-                          450.0f,
-                          450.0f );
-  cinder::gl::draw(image, drawRect);
-
-
-
-  /**cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
-                                    350.0f,
-                                    450.0f,
-                                    450.0f ) );
-                                    */
-
-  /*
-  cinder::gl::drawSolidRect( cinder::Rectf( 200.0f,
-                                            100.0f,
-                                            230.0f,
-                                            350.0f ) );
-                                            */
-
-
-  //cinder::gl::draw(image, drawRect);
-
-
-
-  /*
-  cinder::gl::drawSolidRect( cinder::Rectf( 570.0f,
-                                            100.0f,
-                                            600.0f,
-                                            350.0f ) );
-  //cinder::gl::draw(image, drawRect);
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 100.0f,
-                                            100.0f,
-                                            130.0f,
-                                            350.0f ) );
-  //cinder::gl::draw(image, drawRect);
-
-
-
-
-  /**
-  cinder::gl::drawSolidRect( cinder::Rectf( 670.0f,
-                                            100.0f,
-                                            700.0f,
-                                            350.0f ) );
-
-
-
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
-                                            200.0f,
-                                            450.0f,
-                                            230.0f ) );
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
-                                            100.0f,
-                                            450.0f,
-                                            130.0f ) );
-
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
-                                            600.0f,
-                                            450.0f,
-                                            570.0f ) );
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 350.0f,
-                                            700.0f,
-                                            450.0f,
-                                            670.0f ) );
-
-
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 200.0f,
-                                            700.0f,
-                                            230.0f,
-                                            450.0f ) );
-
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 570.0f,
-                                            700.0f,
-                                            600.0f,
-                                            450.0f ) );
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 100.0f,
-                                            700.0f,
-                                            130.0f,
-                                            450.0f ) );
-
-
-
-  cinder::gl::drawSolidRect( cinder::Rectf( 670.0f,
-                                            700.0f,
-                                            700.0f,
-                                            450.0f ) );
-
-
-
-
-  /**
-  cinder::gl::color(cinder::Color(0.8, 0.9, 0.5));
-  cinder::gl::drawSolidRect( cinder::Rectf( getWindowWidth()-10.0f,
-                                            getWindowHeight()/2-20.0f,
-                                            getWindowWidth()/2+40.0f,
-                                            getWindowHeight()/2+20.0f ) );
-                                            */
+  for (int i = 0; i < board_pieces.size(); i++) {
+    cinder::gl::draw(back_texture, ci::Rectf({board_pieces[i].GetXPos(),
+                                             board_pieces[i].GetYPos()},
+                                             {board_pieces[i].GetXPos() + 75.0,
+                                             board_pieces[i].GetYPos() + 75.0}));
+  }
 
 }
 
 bool MyApp::CheckIfBurned(Player current_player, vector<Board> pieces) {
   for (int i = 0; i < pieces.size(); i++) {
     if (current_player.GetXPosition() >= pieces[i].GetXPos()
-    && current_player.GetXPosition() <= pieces[i].GetXPos() + 75.0
-    && current_player.GetYPosition() >= pieces[i].GetYPos()
-    && current_player.GetYPosition() <= pieces[i].GetYPos() + 75.0) {
+        && current_player.GetXPosition() <= pieces[i].GetXPos() + 75.0
+        && current_player.GetYPosition() >= pieces[i].GetYPos()
+        && current_player.GetYPosition() <= pieces[i].GetYPos() + 75.0) {
       return true;
     }
   }
   return false;
+}
+
+void MyApp::DrawBackground() {
+  auto back_texture =
+      cinder::gl::Texture::create(ci::loadImage(loadAsset("rock_texture.png")));
+  ci::gl::color(ci::ColorA(1, 1, 1, 1));
+  cinder::gl::draw(back_texture, ci::Rectf({0,
+                                            0},
+                                           {800,
+                                            800}));
+}
+
+
+//From Snake Project
+template <typename C>
+void PrintText(const string& text, const C& color, const cinder::ivec2& size,
+               const cinder::vec2& loc) {
+  cinder::gl::color(color);
+
+  auto box = TextBox()
+      .alignment(TextBox::CENTER)
+      .font(cinder::Font(kNormalFont, 30))
+      .size(size)
+      .color(color)
+      .backgroundColor(ColorA(0, 0, 0, 0))
+      .text(text);
+
+  const auto box_size = box.getSize();
+  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
+  const auto surface = box.render();
+  const auto texture = cinder::gl::Texture::create(surface);
+  cinder::gl::draw(texture, locp);
 }
 
 

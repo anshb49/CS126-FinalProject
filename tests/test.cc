@@ -8,12 +8,13 @@
 //#include <mylibrary/example.h>
 #include <mylibrary/player.h>
 #include <mylibrary/monster.h>
-#include <mylibrary/board.h>
+#include "mylibrary/board.h"
 
 Player user;
 Monster monster;
 
-Board board;
+
+
 
 
 TEST_CASE("Change Direction Correctly for Player") {
@@ -32,19 +33,6 @@ TEST_CASE("Change Direction Correctly for Player") {
     bool is_correct_distance = user.GetXPosition() == 35;
     REQUIRE(is_correct_distance);
   }
-
-  SECTION("Move Up Correct Distance") {
-    user.MoveUp();
-    bool is_correct_distance = user.GetYPosition() == 35;
-    REQUIRE(is_correct_distance);
-  }
-
-  SECTION("Move Down Correct Distance") {
-    user.MoveDown();
-    bool is_correct_distance = user.GetYPosition() == 65;
-    REQUIRE(is_correct_distance);
-  }
-
 }
 
 TEST_CASE("Change Direction Correctly for Monster") {
@@ -94,32 +82,16 @@ TEST_CASE("Check Correct Speed for Monster") {
 }
 
 
-TEST_CASE("Contains correct Number of Board positions") {
+TEST_CASE("Contains random Board positions") {
 
+  Board board1;
+  Board board2;
 
-  SECTION("Check X1 Positions") {
-    int size = board.GetX1Positions().size();
-    bool is_correct_size = size == 13;
-    REQUIRE(is_correct_size);
+  SECTION("Check X Positions Not Same") {
+    bool is_different_x = board1.GetXPos() != board2.GetXPos();
+    REQUIRE(is_different_x);
   }
 
-  SECTION("Check Y1 Positions") {
-    int size = board.GetX2Positions().size();
-    bool is_correct_size = size == 13;
-    REQUIRE(is_correct_size);
-  }
-
-  SECTION("Check X2 Positions") {
-    int size = board.GetY1Positions().size();
-    bool is_correct_size = size == 13;
-    REQUIRE(is_correct_size);
-  }
-
-  SECTION("Check Y2 Positions") {
-    int size = board.GetY2Positions().size();
-    bool is_correct_size = size == 13;
-    REQUIRE(is_correct_size);
-  }
 
 }
 
@@ -160,11 +132,48 @@ TEST_CASE("Check Not Going Out Of Screen Boundaries") {
 
 
 
-TEST_CASE("Check If Game Ended") {
-  //Check DidGameEnd Method which will use monster and user location
+TEST_CASE("Check If Player Died From Lava") {
+
 }
 
 TEST_CASE("Check If Stayed Within Board") {
   //Check That user does not have a current location that is outside of the board
   //bounds
+
+  SECTION("Stays in Right Boundary") {
+    user.SetXPosition(775);
+    user.SetYPosition(50);
+
+    user.MoveRight();
+    bool is_inside_boundary = user.GetXPosition() <= 800;
+    REQUIRE(is_inside_boundary);
+  }
+
+  SECTION("Stays in Left Boundary") {
+    user.SetXPosition(10);
+    user.SetYPosition(50);
+
+    user.MoveLeft();
+    bool is_inside_boundary = user.GetXPosition() >= 0;
+    REQUIRE(is_inside_boundary);
+  }
+
+  SECTION("Stays in Top Boundary") {
+    user.SetXPosition(50);
+    user.SetYPosition(15);
+
+    user.MoveUp();
+    bool is_inside_boundary = user.GetXPosition() >= 0;
+    REQUIRE(is_inside_boundary);
+  }
+
+  SECTION("Stays in Bottom Boundary") {
+    user.SetXPosition(775);
+    user.SetYPosition(790);
+
+    user.MoveDown();
+    bool is_inside_boundary = user.GetXPosition() <= 800;
+    REQUIRE(is_inside_boundary);
+  }
+
 }
