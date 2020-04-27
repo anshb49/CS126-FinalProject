@@ -51,6 +51,7 @@ namespace myapp {
 using cinder::app::KeyEvent;
 
 vector<Board> board_pieces;
+vector<Monster> monster_vector;
 
 
 DECLARE_string(name);
@@ -62,25 +63,39 @@ MyApp::MyApp() :
 
 
 void MyApp::setup() {
+  monster_vector.clear();
   for (int i = 0; i < 10; i++) {
     Board current_piece;
     board_pieces.push_back(current_piece);
   }
+
+  monster_vector.push_back(monster);
 }
 
 void MyApp::update() {
   //Will be used when implement game over
+  std::chrono::high_resolution_clock::time_point t2 =
+      std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> time_span =
+      duration_cast<std::chrono::duration<double>>(t2 - t1);
+  //int time = time_span.count();
+
+  /*
+  if ((float)((time_span.count()) / 5)%1 <= 0.5) {
+    Monster new_monster;
+    monster_vector.push_back(new_monster);
+    std::cout<< "vect size: " << monster_vector.size() << std::endl;
+  }
+   */
+
 
   is_burned = CheckIfBurned(player, board_pieces);
 
 
   if (is_burned) {
     std::cout << "burned in lava";
-    std::chrono::high_resolution_clock::time_point t2 =
-        std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> time_span =
-        duration_cast<std::chrono::duration<double>>(t2 - t1);
     leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
+
   }
 
 }
@@ -143,16 +158,25 @@ void MyApp::DrawUser() {
 }
 
 void MyApp::DrawMonster() {
-  image = cinder::gl::Texture2d::create(monster_img);
 
-  monster.MoveTowardsPlayer(player.GetXPosition(), player.GetYPosition());
+  auto back_texture =
+      cinder::gl::Texture::create(ci::loadImage(loadAsset("monster_pic.png")));
+  ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
-  cinder::Rectf drawRect( monster.GetXPosition(),
-                          monster.GetYPosition(),
-                          monster.GetXPosition() + 65,
-                          monster.GetYPosition() + 65);
 
-  cinder::gl::draw(image, drawRect);
+  for (int i = 0; i < monster_vector.size(); i++) {
+    monster_vector[i].MoveTowardsPlayer(player.GetXPosition(), player.GetYPosition());
+    cinder::gl::draw(back_texture, ci::Rectf({monster_vector[i].GetXPosition(),
+                                              monster_vector[i].GetYPosition()},
+                                             {monster_vector[i].GetXPosition() + 65,
+                                              monster_vector[i].GetYPosition() + 65}));
+
+
+  }
+
+
+
+
 
 }
 
@@ -218,26 +242,7 @@ void MyApp::DrawBackground() {
 }
 
 
-//From Snake Project
-template <typename C>
-void PrintText(const string& text, const C& color, const cinder::ivec2& size,
-               const cinder::vec2& loc) {
-  cinder::gl::color(color);
 
-  auto box = TextBox()
-      .alignment(TextBox::CENTER)
-      .font(cinder::Font(kNormalFont, 30))
-      .size(size)
-      .color(color)
-      .backgroundColor(ColorA(0, 0, 0, 0))
-      .text(text);
-
-  const auto box_size = box.getSize();
-  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
-  const auto surface = box.render();
-  const auto texture = cinder::gl::Texture::create(surface);
-  cinder::gl::draw(texture, locp);
-}
 
 
 

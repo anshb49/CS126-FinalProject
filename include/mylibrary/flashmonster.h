@@ -9,3 +9,13 @@
 
 #include "mylibrary/monster.h"
 
+class FlashMonster {
+ private:
+  int current_x = 0;
+  int current_y = 0;
+
+ public:
+  void ChangePosition();
+  int GetXPosition();
+  int GetYPosition();
+};

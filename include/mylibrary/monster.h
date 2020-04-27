@@ -6,13 +6,14 @@
 #define FINALPROJECT_MONSTER_H
 
 #endif  // FINALPROJECT_MONSTER_H
+#include <stdlib.h>
 
 class Monster {
 
  private:
-  int current_x = 0;
-  int current_y = 0;
-  int speed = 10;
+  int current_x = (rand() % 750) + 2;
+  int current_y = (rand() % 750) + 2;
+  int speed = (rand() % 10) + 2;
 
  public:
 
