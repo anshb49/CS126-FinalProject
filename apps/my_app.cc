@@ -18,6 +18,7 @@
 
 #include "mylibrary/player.h"
 #include "mylibrary/monster.h"
+#include "mylibrary/flashmonster.h"
 
 
 using std::chrono::duration_cast;
@@ -26,14 +27,14 @@ using std::chrono::system_clock;
 
 Player player;
 Monster monster;
+FlashMonster flash_monster;
+
 
 int lava_counter = 1;
 
 
 cinder::gl::Texture2dRef image;
 auto img = loadImage(cinder::app::loadAsset("ninja_image.png"));
-
-auto wall_img = loadImage(cinder::app::loadAsset("final_neon_wall.png"));
 
 auto monster_img = loadImage(cinder::app::loadAsset("monster_pic.png"));
 
@@ -100,7 +101,6 @@ void MyApp::update() {
   if (CheckIfBurned(player, board_pieces)) {
     std::cout << "burned in lava";
     leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
-
     return;
   }
 
@@ -125,9 +125,13 @@ void MyApp::draw() {
   DrawUser();
   DrawBoard();
   DrawMonster();
+  DrawFlashMonster();
 }
 
 void MyApp::keyDown(KeyEvent event) {
+  if (is_burned) {
+    return;
+  }
   switch (event.getCode()) {
     case KeyEvent::KEY_RIGHT: {
       player.MoveRight();
@@ -173,14 +177,30 @@ void MyApp::DrawMonster() {
 
 
   for (int i = 0; i < monster_vector.size(); i++) {
-    monster_vector[i].MoveTowardsPlayer(player.GetXPosition(), player.GetYPosition());
-    cinder::gl::draw(back_texture, ci::Rectf({monster_vector[i].GetXPosition(),
-                                              monster_vector[i].GetYPosition()},
-                                             {monster_vector[i].GetXPosition() + 65,
-                                              monster_vector[i].GetYPosition() + 65}));
+    monster_vector[i].MoveTowardsPlayer(player.GetXPosition(),
+                                        player.GetYPosition());
+    cinder::gl::draw(back_texture,
+                     ci::Rectf({monster_vector[i].GetXPosition(),
+                                monster_vector[i].GetYPosition()},
+                               {monster_vector[i].GetXPosition() + 65,
+                                monster_vector[i].GetYPosition() + 65}));
   }
-
 }
+
+void MyApp::DrawFlashMonster() {
+
+  auto back_texture =
+      cinder::gl::Texture::create(ci::loadImage(loadAsset("monster_pic.png")));
+  ci::gl::color(ci::ColorA(1, 1, 1, 1));
+
+  flash_monster.ChangePosition();
+  cinder::gl::draw(back_texture,
+                   ci::Rectf({flash_monster.GetXPosition(),
+                              flash_monster.GetYPosition()},
+                             {flash_monster.GetXPosition() + 65,
+                              flash_monster.GetYPosition() + 65}));
+}
+
 
 
 void MyApp::DrawBoard() {
@@ -228,6 +248,15 @@ bool MyApp::CheckIfBurned(Player current_player, vector<Board> pieces) {
   }
   return false;
 }
+
+/*
+bool MyApp:CheckIfCaught(Player current_player, vector<Monster> monsters) {
+  for (int i = 0; i )
+};
+ */
+
+
+
 
 void MyApp::DrawBackground() {
   auto back_texture =

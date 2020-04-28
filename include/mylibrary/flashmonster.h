@@ -7,8 +7,6 @@
 
 #endif  // FINALPROJECT_FLASHMONSTER_H
 
-#include "mylibrary/monster.h"
-
 class FlashMonster {
  private:
   int current_x = 0;
