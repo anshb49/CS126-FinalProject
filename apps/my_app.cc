@@ -31,6 +31,11 @@ FlashMonster flash_monster;
 
 
 int lava_counter = 1;
+int ninja_counter = 1;
+bool can_add_monster = true;
+
+int previous_time = 0;
+int next_time = 5;
 
 
 cinder::gl::Texture2dRef image;
@@ -77,8 +82,6 @@ void MyApp::setup() {
 
 void MyApp::update() {
 
-  std::cout <<  "x: " << player.GetXPosition() << std::endl;
-  std::cout <<  "y: " << player.GetYPosition() << std::endl;
 
 
   //Will be used when implement game over
@@ -86,15 +89,14 @@ void MyApp::update() {
       std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> time_span =
       duration_cast<std::chrono::duration<double>>(t2 - t1);
-  //int time = time_span.count();
+  int time = time_span.count();
 
-  /*
-  if ((float)((time_span.count()) / 5)%1 <= 0.5) {
-    Monster new_monster;
-    monster_vector.push_back(new_monster);
-    std::cout<< "vect size: " << monster_vector.size() << std::endl;
+  if (time == next_time) {
+      previous_time = next_time;
+      next_time = next_time + 5;
+      Monster new_monster;
+      monster_vector.push_back(new_monster);
   }
-   */
 
 
   is_burned = CheckIfBurned(player, board_pieces);
@@ -119,7 +121,6 @@ void MyApp::draw() {
     cinder::gl::draw(image, drawRect);
     return;
   }
-
 
   DrawBackground();
   DrawUser();
@@ -156,17 +157,39 @@ void MyApp::DrawUser() {
   if (is_burned) {
     return;
   }
-  cinder::gl::disableDepthRead();
-  cinder::gl::disableDepthWrite();
+    auto back_texture =
+            cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja1.png")));
 
-  image = cinder::gl::Texture2d::create(img);
+    if (ninja_counter == 1) {
+        ninja_counter++;
+    } else if (ninja_counter == 2) {
+        back_texture =
+                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja2.png")));
+        ninja_counter++;
+    } else if (ninja_counter == 3) {
+        back_texture =
+                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja3.png")));
+        ninja_counter++;
+    } else if (ninja_counter == 4) {
+        back_texture =
+                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja4.png")));
+        ninja_counter++;
+    } else if (ninja_counter == 5) {
+        back_texture =
+                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja5.png")));
+        ninja_counter++;
+    } else if (ninja_counter == 6) {
+        back_texture =
+                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja6.png")));
+        ninja_counter = 1;
+    }
 
-  cinder::Rectf drawRect( player.GetXPosition(),
-                          player.GetYPosition(),
-                          player.GetXPosition() + 80,
-                          player.GetYPosition() + 80);
+    ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
-  cinder::gl::draw(image, drawRect);
+    cinder::gl::draw(back_texture, ci::Rectf({player.GetXPosition(),
+                                              player.GetYPosition()},
+                                             {player.GetXPosition() + 100,
+                                              player.GetYPosition() + 100}));
 }
 
 void MyApp::DrawMonster() {
@@ -188,7 +211,6 @@ void MyApp::DrawMonster() {
 }
 
 void MyApp::DrawFlashMonster() {
-
   auto back_texture =
       cinder::gl::Texture::create(ci::loadImage(loadAsset("monster_pic.png")));
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
@@ -240,9 +262,9 @@ void MyApp::DrawBoard() {
 bool MyApp::CheckIfBurned(Player current_player, vector<Board> pieces) {
   for (int i = 0; i < pieces.size(); i++) {
     if (current_player.GetXPosition() >= pieces[i].GetXPos() - 50.0
-        && current_player.GetXPosition() <= pieces[i].GetXPos() + 50.0
-        && current_player.GetYPosition() >= pieces[i].GetYPos() - 40.0
-        && current_player.GetYPosition() <= pieces[i].GetYPos() + 50.0) {
+        && current_player.GetXPosition() <= pieces[i].GetXPos() + 30.0
+        && current_player.GetYPosition() >= pieces[i].GetYPos() - 60.0
+        && current_player.GetYPosition() <= pieces[i].GetYPos() + 40.0) {
       return true;
     }
   }
@@ -267,10 +289,5 @@ void MyApp::DrawBackground() {
                                            {800,
                                             800}));
 }
-
-
-
-
-
 
 }

@@ -20,4 +20,4 @@ burned.
 
 - **4/27/20** = Goes to Game Over Screen for burned player. Still
 need to display scores on this game over screen and create a game over screen
-for monster.
+when in contact with monster.
