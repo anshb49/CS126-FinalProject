@@ -6,6 +6,9 @@
 #include <cinder/app/App.h>
 
 #include "mylibrary/leaderboard.h"
+#include "mylibrary/player.h"
+#include "mylibrary/monster.h"
+#include "mylibrary/flashmonster.h"
 
 namespace myapp {
 
@@ -24,6 +27,7 @@ class MyApp : public cinder::app::App {
   void DrawFlashMonster();
 
   bool CheckIfBurned(Player current_player, vector<Board> pieces);
+  bool CheckIfCaught(Player current_player, vector<Monster> monsters);
 
  private:
   LeaderBoard leaderboard;

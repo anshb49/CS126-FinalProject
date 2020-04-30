@@ -21,3 +21,7 @@ burned.
 - **4/27/20** = Goes to Game Over Screen for burned player. Still
 need to display scores on this game over screen and create a game over screen
 when in contact with monster.
+
+- **4/28/20** = Created animated player and increased number of monsters
+every 20 seconds. Still need to display scores on this game over screen and create a game over screen
+when in contact with monster.

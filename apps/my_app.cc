@@ -16,9 +16,6 @@
 #include <cmath>
 #include <string>
 
-#include "mylibrary/player.h"
-#include "mylibrary/monster.h"
-#include "mylibrary/flashmonster.h"
 
 
 using std::chrono::duration_cast;
@@ -32,10 +29,9 @@ FlashMonster flash_monster;
 
 int lava_counter = 1;
 int ninja_counter = 1;
-bool can_add_monster = true;
 
 int previous_time = 0;
-int next_time = 5;
+int next_time = 20;
 
 
 cinder::gl::Texture2dRef image;
@@ -51,14 +47,13 @@ std::chrono::high_resolution_clock::time_point t1 = std::chrono::
 high_resolution_clock::now();
 
 bool is_burned = false;
+bool is_caught = false;
 
 namespace myapp {
 
 using cinder::app::KeyEvent;
-
 vector<Board> board_pieces;
 vector<Monster> monster_vector;
-
 const int kNumFire = 14;
 
 
@@ -82,9 +77,6 @@ void MyApp::setup() {
 
 void MyApp::update() {
 
-
-
-  //Will be used when implement game over
   std::chrono::high_resolution_clock::time_point t2 =
       std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> time_span =
@@ -93,15 +85,15 @@ void MyApp::update() {
 
   if (time == next_time) {
       previous_time = next_time;
-      next_time = next_time + 5;
+      next_time = next_time + 20;
       Monster new_monster;
       monster_vector.push_back(new_monster);
   }
 
 
   is_burned = CheckIfBurned(player, board_pieces);
-  if (CheckIfBurned(player, board_pieces)) {
-    std::cout << "burned in lava";
+  is_caught = CheckIfCaught(player, monster_vector);
+  if (is_burned || is_caught) {
     leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
     return;
   }
@@ -111,8 +103,7 @@ void MyApp::update() {
 void MyApp::draw() {
   cinder::gl::clear();
 
-
-  if (is_burned) {
+  if (is_burned || is_caught) {
     image = cinder::gl::Texture2d::create(fire_end_img);
     cinder::Rectf drawRect( 0.0f,
                             0.0f,
@@ -130,7 +121,7 @@ void MyApp::draw() {
 }
 
 void MyApp::keyDown(KeyEvent event) {
-  if (is_burned) {
+  if (is_burned || is_caught) {
     return;
   }
   switch (event.getCode()) {
@@ -154,7 +145,7 @@ void MyApp::keyDown(KeyEvent event) {
 }
 
 void MyApp::DrawUser() {
-  if (is_burned) {
+  if (is_burned || is_caught) {
     return;
   }
     auto back_texture =
@@ -271,11 +262,21 @@ bool MyApp::CheckIfBurned(Player current_player, vector<Board> pieces) {
   return false;
 }
 
-/*
-bool MyApp:CheckIfCaught(Player current_player, vector<Monster> monsters) {
-  for (int i = 0; i )
-};
- */
+
+bool MyApp::CheckIfCaught(Player current_player, vector<Monster> monsters) {
+  for (int i = 0; i < monster_vector.size(); i++) {
+    if (abs(current_player.GetXPosition() - monster_vector[i].GetXPosition()) <= 50
+    && abs(current_player.GetYPosition() - monster_vector[i].GetYPosition()) <= 50) {
+      return true;
+    }
+  }
+
+  if (abs(current_player.GetXPosition() - flash_monster.GetXPosition()) <= 40
+      && abs(current_player.GetYPosition() - flash_monster.GetYPosition()) <= 40) {
+    return true;
+  }
+  return false;
+}
 
 
 
