@@ -26,25 +26,48 @@ void LeaderBoard::AddScoreToLeaderBoard(string name, int score) {
       << player_score;
 }
 
-/*
+
 vector<Player> GetPlayers(sqlite::database_binder* rows) {
   vector<Player> players;
 
   for (auto&& row : *rows) {
     string name;
     size_t score;
-    row >> name >> score;
-    Player player = {name, score};
+    row >> name;
+    Player player = {name, 200};
     players.push_back(player);
   }
 
   return players;
+
 }
 
-vector<Player> LeaderBoard::RetrieveHighScores(const size_t limit) {
-  auto rows = db_ << "SELECT name,score FROM leaderboard order by score desc LIMIT (?);"
+vector<int> LeaderBoard::RetrieveHighScores(const size_t limit) {
+  auto rows = db_ << "SELECT score FROM leaderboard order by score desc LIMIT (?);"
                   << limit;
 
-  return GetPlayers(&rows);
+  vector<int> player_scores;
+  for (auto&& row : rows) {
+    string name;
+    size_t score;
+    row >> score;
+    player_scores.push_back(score);
+  }
+
+  return player_scores;
 }
- */
+
+vector<string> LeaderBoard::RetrieveHighNames(const size_t limit) {
+  auto rows = db_ << "SELECT name FROM leaderboard order by score desc LIMIT (?);"
+                  << limit;
+
+  vector<string> player_names;
+  for (auto&& row : rows) {
+    string name;
+    row >> name;
+    player_names.push_back(name);
+  }
+
+  return player_names;
+}
+

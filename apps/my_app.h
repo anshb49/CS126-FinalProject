@@ -28,10 +28,13 @@ class MyApp : public cinder::app::App {
 
   bool CheckIfBurned(Player current_player, vector<Board> pieces);
   bool CheckIfCaught(Player current_player, vector<Monster> monsters);
+  void DrawGameOverScreen();
 
  private:
   LeaderBoard leaderboard;
   const std::string user_name;
+  std::vector<int> top_player_scores;
+  std::vector<std::string> top_player_names;
 };
 
 }  // namespace myapp

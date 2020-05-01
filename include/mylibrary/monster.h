@@ -13,7 +13,7 @@ class Monster {
  private:
   int current_x = (rand() % 750) + 2;
   int current_y = (rand() % 750) + 2;
-  int speed = (rand() % 10) + 2;
+  int speed = (rand() % 7) + 2;
 
  public:
 

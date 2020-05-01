@@ -23,7 +23,8 @@ class LeaderBoard {
 
   void AddScoreToLeaderBoard(string name, int score);
 
-  std::vector<Player> RetrieveHighScores(const size_t limit);
+  vector<int> RetrieveHighScores(const size_t limit);
+  vector<string> RetrieveHighNames(const size_t limit);
 
 
  private:

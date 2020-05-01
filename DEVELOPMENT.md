@@ -23,5 +23,6 @@ need to display scores on this game over screen and create a game over screen
 when in contact with monster.
 
 - **4/28/20** = Created animated player and increased number of monsters
-every 20 seconds. Still need to display scores on this game over screen and create a game over screen
-when in contact with monster.
+every 20 seconds. Slowed down speed of 
+flash monster. Still need to display scores on this game over screen and create a game over screen
+when in contact with monster, create welcome screen, and sound effects, and add levels.

@@ -16,10 +16,11 @@ class Player {
  public:
 
 
-  Player() {
+  Player(const std::string& name, size_t score) {
     current_x = 0;
     current_y = 400;
   }
+
 
   int GetMyScore();
   int GetXPosition();
@@ -34,6 +35,7 @@ class Player {
   void SetYPosition(int loc);
 
   void SetGameOverPosition();
+  void SetScore(int new_score);
 
   bool CanMoveRight();
 

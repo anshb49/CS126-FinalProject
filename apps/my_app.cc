@@ -9,8 +9,6 @@
 #include <cinder/gl/draw.h>
 #include <cinder/gl/gl.h>
 #include <gflags/gflags.h>
-
-
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -21,33 +19,42 @@
 using std::chrono::duration_cast;
 using std::chrono::seconds;
 using std::chrono::system_clock;
+using cinder::TextBox;
 
-Player player;
+Player player("initial name", 0);
 Monster monster;
 FlashMonster flash_monster;
 
+const char kBoldFont[] = "Arial-BoldMT";
 
+int welcome_count = 0;
+const int kWelcomeTime = 200;
+
+bool should_start_time = true;
+
+bool is_burned = false;
+bool is_caught = false;
 int lava_counter = 1;
 int ninja_counter = 1;
 
 int previous_time = 0;
 int next_time = 20;
+bool did_add_score = false;
+const int kAmount = 3;
+bool printed_game_over = false;
 
+int flash_wait_counter = 0;
+
+const string kInstructions = "Use the arrow keys to escape from the monsters"
+                             "and keep away from the fire";
 
 cinder::gl::Texture2dRef image;
-auto img = loadImage(cinder::app::loadAsset("ninja_image.png"));
-
 auto monster_img = loadImage(cinder::app::loadAsset("monster_pic.png"));
-
 auto fire_end_img = loadImage(cinder::app::loadAsset("fire_gameover.png"));
-
 const char kDbPath[] = "test_scoreboard.db";
-
 std::chrono::high_resolution_clock::time_point t1 = std::chrono::
 high_resolution_clock::now();
 
-bool is_burned = false;
-bool is_caught = false;
 
 namespace myapp {
 
@@ -77,6 +84,7 @@ void MyApp::setup() {
 
 void MyApp::update() {
 
+
   std::chrono::high_resolution_clock::time_point t2 =
       std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> time_span =
@@ -93,31 +101,36 @@ void MyApp::update() {
 
   is_burned = CheckIfBurned(player, board_pieces);
   is_caught = CheckIfCaught(player, monster_vector);
-  if (is_burned || is_caught) {
+  if ((is_burned || is_caught) && !did_add_score) {
+    player.SetScore(time);
     leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
+    did_add_score = true;
     return;
   }
 
 }
 
 void MyApp::draw() {
-  cinder::gl::clear();
 
-  if (is_burned || is_caught) {
-    image = cinder::gl::Texture2d::create(fire_end_img);
-    cinder::Rectf drawRect( 0.0f,
-                            0.0f,
-                            1000.0f,
-                            1000.0f);
-    cinder::gl::draw(image, drawRect);
-    return;
+  cinder::gl::enableAlphaBlending();
+  if (welcome_count <= kWelcomeTime) {
+    cinder::gl::clear();
+    DrawBackground();
+  } else {
+    if (is_burned || is_caught) {
+      top_player_scores = leaderboard.RetrieveHighScores(kAmount);
+      top_player_names = leaderboard.RetrieveHighNames(kAmount);
+      DrawGameOverScreen();
+      return;
+    }
+
+    cinder::gl::clear();
+    DrawBackground();
+    DrawUser();
+    DrawBoard();
+    DrawMonster();
+    DrawFlashMonster();
   }
-
-  DrawBackground();
-  DrawUser();
-  DrawBoard();
-  DrawMonster();
-  DrawFlashMonster();
 }
 
 void MyApp::keyDown(KeyEvent event) {
@@ -150,7 +163,6 @@ void MyApp::DrawUser() {
   }
     auto back_texture =
             cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja1.png")));
-
     if (ninja_counter == 1) {
         ninja_counter++;
     } else if (ninja_counter == 2) {
@@ -206,7 +218,11 @@ void MyApp::DrawFlashMonster() {
       cinder::gl::Texture::create(ci::loadImage(loadAsset("monster_pic.png")));
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
-  flash_monster.ChangePosition();
+  if (flash_wait_counter >= 20) {
+    flash_monster.ChangePosition();
+    flash_wait_counter = 0;
+  }
+  flash_wait_counter++;
   cinder::gl::draw(back_texture,
                    ci::Rectf({flash_monster.GetXPosition(),
                               flash_monster.GetYPosition()},
@@ -281,14 +297,75 @@ bool MyApp::CheckIfCaught(Player current_player, vector<Monster> monsters) {
 
 
 
+
+template <typename C>
+void PrintText(const string& text, const C& color, const cinder::ivec2& size,
+               const cinder::vec2& loc) {
+  cinder::gl::color(color);
+
+  auto box = TextBox()
+      .alignment(TextBox::CENTER)
+      .font(cinder::Font(kBoldFont, 30))
+      .size(size)
+      .color(color)
+      .backgroundColor(cinder::ColorA(0, 0, 0, 0))
+      .text(text);
+
+  const auto box_size = box.getSize();
+  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
+  const auto surface = box.render();
+  const auto texture = cinder::gl::Texture::create(surface);
+  cinder::gl::draw(texture, locp);
+}
+
+void MyApp::DrawGameOverScreen() {
+  if (printed_game_over) return;
+
+  image = cinder::gl::Texture2d::create(fire_end_img);
+  cinder::Rectf drawRect( 0.0f,
+                          0.0f,
+                          1000.0f,
+                          1000.0f);
+  cinder::gl::draw(image, drawRect);
+
+
+  const cinder::vec2 center = getWindowCenter();
+  const cinder::ivec2 size = {500, 50};
+  const cinder::Color color = cinder::Color::black();
+
+  size_t row = 0;
+  PrintText("Game Over :(", color, size, center);
+  std::cout << "printed";
+  for (int i = 0; i < top_player_scores.size(); i++) {
+    PrintText(top_player_names[i] + " - " + std::to_string(top_player_scores[i]),
+              color, size, {center.x, center.y + (++row) * 50});
+  }
+
+  printed_game_over = true;
+}
+
 void MyApp::DrawBackground() {
-  auto back_texture =
-      cinder::gl::Texture::create(ci::loadImage(loadAsset("rock_texture.png")));
-  ci::gl::color(ci::ColorA(1, 1, 1, 1));
-  cinder::gl::draw(back_texture, ci::Rectf({0,
-                                            0},
-                                           {800,
-                                            800}));
+  if (should_start_time && welcome_count > kWelcomeTime) {
+    t1 = std::chrono::high_resolution_clock::now();
+    should_start_time = false;
+  }
+
+  if (welcome_count <= kWelcomeTime) {
+    cinder::gl::clear(cinder::Color(0, 1, 1));
+    const cinder::vec2 center = getWindowCenter();
+    const cinder::ivec2 size = {500, 110};
+    const cinder::Color color = cinder::Color::black();
+    PrintText(kInstructions, color, size, {center.x, center.y + (1) * 50});
+    welcome_count++;
+  } else {
+    auto back_texture =
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("rock_texture.png")));
+    ci::gl::color(ci::ColorA(1, 1, 1, 1));
+    cinder::gl::draw(back_texture, ci::Rectf({0,
+                                              0},
+                                             {800,
+                                              800}));
+  }
 }
 
 }
