@@ -11,9 +11,7 @@
 #include <gflags/gflags.h>
 #include <algorithm>
 #include <chrono>
-#include <cmath>
 #include <string>
-
 
 
 using std::chrono::duration_cast;
@@ -28,8 +26,6 @@ Engine engine;
 
 const char kBoldFont[] = "Arial-BoldMT";
 
-int welcome_count = 0;
-const int kWelcomeTime = 200;
 
 bool should_start_time = true;
 
@@ -39,18 +35,23 @@ int lava_counter = 1;
 int ninja_counter = 1;
 
 int previous_time = 0;
-int next_time = 20;
+int next_time = 15;
 bool did_add_score = false;
 const int kAmount = 3;
 bool printed_game_over = false;
-
 int flash_wait_counter = 0;
 
-const string kInstructions = "Use the arrow keys to escape from the monsters"
-                             "and keep away from the fire";
+const string kInstructions = "Use the arrow keys to escape from the monsters that"
+                             " are chasing you. Do not get burned by the fire."
+                             " Beware of the Flash Monster that may surprise you"
+                             " during your escape";
+const string kLoading = "Loading";
+int loading_counter = 1;
+int welcome_count = 0;
+const int kWelcomeTime = 300;
+
 
 cinder::gl::Texture2dRef image;
-auto monster_img = loadImage(cinder::app::loadAsset("monster_pic.png"));
 auto fire_end_img = loadImage(cinder::app::loadAsset("fire_gameover.png"));
 const char kDbPath[] = "test_scoreboard.db";
 std::chrono::high_resolution_clock::time_point t1 = std::chrono::
@@ -69,23 +70,20 @@ DECLARE_string(name);
 
 MyApp::MyApp() :
     leaderboard{cinder::app::getAssetPath(kDbPath).string()},
-    user_name{FLAGS_name}
-{}
+    user_name{FLAGS_name}{}
 
 
 void MyApp::setup() {
   monster_vector.clear();
+  board_pieces.clear();
   for (int i = 0; i < kNumFire; i++) {
     Board current_piece;
     board_pieces.push_back(current_piece);
   }
-
   monster_vector.push_back(monster);
 }
 
 void MyApp::update() {
-
-
   std::chrono::high_resolution_clock::time_point t2 =
       std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> time_span =
@@ -94,7 +92,7 @@ void MyApp::update() {
 
   if (time == next_time) {
       previous_time = next_time;
-      next_time = next_time + 20;
+      next_time = next_time + 15;
       Monster new_monster;
       monster_vector.push_back(new_monster);
   }
@@ -104,17 +102,14 @@ void MyApp::update() {
   is_caught = engine.CheckIfCaught(player, monster_vector, flash_monster);
   if ((is_burned || is_caught) && !did_add_score) {
     player.SetScore(time);
-    std::cout << player.GetMyScore();
     leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
     did_add_score = true;
     return;
   }
-
 }
 
 void MyApp::draw() {
 
-  cinder::gl::enableAlphaBlending();
   if (welcome_count <= kWelcomeTime) {
     cinder::gl::clear();
     DrawBackground();
@@ -260,6 +255,7 @@ void MyApp::DrawBoard() {
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
   for (int i = 0; i < board_pieces.size(); i++) {
+
     cinder::gl::draw(back_texture, ci::Rectf({board_pieces[i].GetXPos(),
                                              board_pieces[i].GetYPos()},
                                              {board_pieces[i].GetXPos() + 75.0,
@@ -327,9 +323,22 @@ void MyApp::DrawBackground() {
   if (welcome_count <= kWelcomeTime) {
     cinder::gl::clear(cinder::Color(0, 1, 1));
     const cinder::vec2 center = getWindowCenter();
-    const cinder::ivec2 size = {500, 110};
+    const cinder::ivec2 size = {800, 200};
     const cinder::Color color = cinder::Color::black();
+    PrintText("Welcome to ESCAPE", color, size, {center.x, center.y + (0) * 50});
     PrintText(kInstructions, color, size, {center.x, center.y + (1) * 50});
+    PrintText(kLoading, color, size, {center.x, center.y + (2) * 100});
+
+    if (loading_counter == 1) {
+      PrintText("...", color, size, {center.x + 70, center.y + (2) * 100});
+      loading_counter++;
+    } else if (loading_counter == 2) {
+      PrintText("....", color, size, {center.x + 70, center.y + (2) * 100});
+      loading_counter++;
+    } else {
+      PrintText(".....", color, size, {center.x + 70, center.y + (2) * 100});
+      loading_counter = 1;
+    }
     welcome_count++;
   } else {
     auto back_texture =

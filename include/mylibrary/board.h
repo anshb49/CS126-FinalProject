@@ -9,6 +9,7 @@
 #endif  // FINALPROJECT_BOARD_H
 
 #include <cstdlib>
+#include <ctime>
 
 class Board {
 

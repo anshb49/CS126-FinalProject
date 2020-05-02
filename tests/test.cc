@@ -5,7 +5,6 @@
 #include <catch2/catch.hpp>
 #include <cinder/Rand.h>
 
-//#include <mylibrary/example.h>
 #include <mylibrary/engine.h>
 #include <mylibrary/player.h>
 

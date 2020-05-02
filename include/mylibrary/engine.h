@@ -15,8 +15,24 @@
 class Engine {
 
  public:
+  /**
+   * Checks the positions of the monsters, flash monster, and the player to
+   * see if the player came in contact with any of the monsters;
+   * @param current_player - the player the user is controlling
+   * @param monster_vector - a vector with all the monsters
+   * @param flash_monster - the flash monster
+   * @return - true if the player was caught, otherwise false
+   */
   bool CheckIfCaught(Player current_player,
       std::vector<Monster> monster_vector, FlashMonster flash_monster);
+
+  /**
+   * Checks the positions of the fires and the player to
+   * see if the player came in contact with any of the fire;
+   * @param current_player - the player the user is controlling
+   * @param pieces - the positions of the fires
+   * @return - true if the player was bruned, otherwise false
+   */
   bool CheckIfBurned(Player current_player, std::vector<Board> pieces);
 
 };

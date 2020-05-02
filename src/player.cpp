@@ -20,7 +20,7 @@ bool is_playing = true;
 void Player::MoveRight() {
   current_x = current_x + 15;
 
-  if (current_x >= 800-20) {
+  if (current_x >= 800-50) {
     current_x = current_x - 15;
   }
 }
@@ -28,7 +28,7 @@ void Player::MoveRight() {
 void Player::MoveLeft() {
   current_x = current_x - 15;
 
-  if (current_x <= 0 - 10) {
+  if (current_x <= 0 - 40) {
     current_x = current_x + 15;
   }
 }
@@ -37,7 +37,7 @@ void Player::MoveUp() {
   current_y = current_y - 15;
 
 
-  if (current_y <= -15) {
+  if (current_y <= -25) {
     current_y = current_y + 15;
   }
 }
@@ -45,7 +45,7 @@ void Player::MoveUp() {
 void Player::MoveDown() {
   current_y = current_y + 15;
 
-  if (current_y >= 800 - 15) {
+  if (current_y >= 800 - 70) {
     current_y = current_y - 15;
   }
 }
