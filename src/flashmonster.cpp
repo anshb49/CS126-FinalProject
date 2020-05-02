@@ -2,6 +2,7 @@
 // Created by Ansh Bhalla on 4/27/20.
 //
 #include "mylibrary/flashmonster.h"
+#include "mylibrary/monster.h"
 #include <stdlib.h>
 
 
@@ -16,4 +17,12 @@ int FlashMonster::GetXPosition() {
 
 int FlashMonster::GetYPosition() {
   return current_y;
+}
+
+void FlashMonster::SetXPosition(int loc) {
+  current_x = loc;
+}
+
+void FlashMonster::SetYPosition(int loc) {
+  current_y = loc;
 }

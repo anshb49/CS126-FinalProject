@@ -16,7 +16,7 @@ class Player {
  public:
 
 
-  Player(const std::string& name, size_t score) {
+  Player(std::string& name, size_t score) {
     current_x = 0;
     current_y = 400;
   }

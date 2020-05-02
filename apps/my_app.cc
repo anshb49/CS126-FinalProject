@@ -21,9 +21,10 @@ using std::chrono::seconds;
 using std::chrono::system_clock;
 using cinder::TextBox;
 
-Player player("initial name", 0);
+Player player((string&)"initial name", 0);
 Monster monster;
 FlashMonster flash_monster;
+Engine engine;
 
 const char kBoldFont[] = "Arial-BoldMT";
 
@@ -99,10 +100,11 @@ void MyApp::update() {
   }
 
 
-  is_burned = CheckIfBurned(player, board_pieces);
-  is_caught = CheckIfCaught(player, monster_vector);
+  is_burned = engine.CheckIfBurned(player, board_pieces);
+  is_caught = engine.CheckIfCaught(player, monster_vector, flash_monster);
   if ((is_burned || is_caught) && !did_add_score) {
     player.SetScore(time);
+    std::cout << player.GetMyScore();
     leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
     did_add_score = true;
     return;
@@ -266,37 +268,6 @@ void MyApp::DrawBoard() {
 
 }
 
-bool MyApp::CheckIfBurned(Player current_player, vector<Board> pieces) {
-  for (int i = 0; i < pieces.size(); i++) {
-    if (current_player.GetXPosition() >= pieces[i].GetXPos() - 50.0
-        && current_player.GetXPosition() <= pieces[i].GetXPos() + 30.0
-        && current_player.GetYPosition() >= pieces[i].GetYPos() - 60.0
-        && current_player.GetYPosition() <= pieces[i].GetYPos() + 40.0) {
-      return true;
-    }
-  }
-  return false;
-}
-
-
-bool MyApp::CheckIfCaught(Player current_player, vector<Monster> monsters) {
-  for (int i = 0; i < monster_vector.size(); i++) {
-    if (abs(current_player.GetXPosition() - monster_vector[i].GetXPosition()) <= 50
-    && abs(current_player.GetYPosition() - monster_vector[i].GetYPosition()) <= 50) {
-      return true;
-    }
-  }
-
-  if (abs(current_player.GetXPosition() - flash_monster.GetXPosition()) <= 40
-      && abs(current_player.GetYPosition() - flash_monster.GetYPosition()) <= 40) {
-    return true;
-  }
-  return false;
-}
-
-
-
-
 
 template <typename C>
 void PrintText(const string& text, const C& color, const cinder::ivec2& size,
@@ -330,15 +301,18 @@ void MyApp::DrawGameOverScreen() {
 
 
   const cinder::vec2 center = getWindowCenter();
-  const cinder::ivec2 size = {500, 50};
+  const cinder::ivec2 size = {800, 100};
   const cinder::Color color = cinder::Color::black();
 
+  PrintText("YOUR SCORE: " + std::to_string(player.GetMyScore()),
+      color, size, {center.x, center.y - (1) * 50});
+
+
   size_t row = 0;
-  PrintText("Game Over :(", color, size, center);
-  std::cout << "printed";
+  PrintText("Top Scores:", color, size, {center.x, center.y + 50 + ++row * 50});
   for (int i = 0; i < top_player_scores.size(); i++) {
     PrintText(top_player_names[i] + " - " + std::to_string(top_player_scores[i]),
-              color, size, {center.x, center.y + (++row) * 50});
+              color, size, {center.x, center.y + 50 + (++row) * 50});
   }
 
   printed_game_over = true;

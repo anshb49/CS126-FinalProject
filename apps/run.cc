@@ -21,7 +21,7 @@ const int kSamples = 8;
 const int kWidth = 800;
 const int kHeight = 800;
 
-DEFINE_string(name, "CS126SP20", "the name of the player");
+DEFINE_string(name, "Random Player", "the name of the player");
 
 
 void ParseArgs(vector<string>* args) {

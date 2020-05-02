@@ -5,7 +5,9 @@
 #ifndef FINALPROJECT_FLASHMONSTER_H
 #define FINALPROJECT_FLASHMONSTER_H
 
+
 #endif  // FINALPROJECT_FLASHMONSTER_H
+
 
 class FlashMonster {
  private:
@@ -16,4 +18,6 @@ class FlashMonster {
   void ChangePosition();
   int GetXPosition();
   int GetYPosition();
+  void SetXPosition(int position);
+  void SetYPosition(int position);
 };

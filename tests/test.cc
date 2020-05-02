@@ -6,11 +6,17 @@
 #include <cinder/Rand.h>
 
 //#include <mylibrary/example.h>
+#include <mylibrary/engine.h>
 #include <mylibrary/player.h>
-#include <mylibrary/monster.h>
 
-Player user;
+
+
+
+Player user((std::string&)"initial name", 0);;
 Monster monster;
+Engine engine;
+FlashMonster flash_monster;
+Board board_piece;
 
 
 
@@ -186,4 +192,92 @@ TEST_CASE("Check If Stayed Within Board") {
     REQUIRE(is_inside_boundary);
   }
 
+}
+
+TEST_CASE("Checks If Monster Caught Player") {
+  std::vector<Monster> monster_vector;
+
+  SECTION("Normal Monster Did Catch Player") {
+    user.SetXPosition(775);
+    user.SetYPosition(790);
+
+    monster.SetXPosition(770);
+    monster.SetYPosition(785);
+    monster_vector.push_back(monster);
+
+    bool did_catch_player = engine.CheckIfCaught(user, monster_vector, flash_monster);
+    REQUIRE(did_catch_player);
+  }
+
+  SECTION("Flash Monster Did Catch Player") {
+    user.SetXPosition(775);
+    user.SetYPosition(790);
+
+    flash_monster.SetXPosition(770);
+    flash_monster.SetYPosition(785);
+
+    bool did_catch_player = engine.CheckIfCaught(user, monster_vector, flash_monster);
+    REQUIRE(did_catch_player);
+  }
+
+  SECTION("Normal Monster Did Not Catch Player") {
+    monster_vector.clear();
+
+    user.SetXPosition(775);
+    user.SetYPosition(790);
+
+    monster.SetXPosition(1);
+    monster.SetYPosition(1);
+    monster_vector.push_back(monster);
+
+    flash_monster.SetXPosition(1);
+    flash_monster.SetXPosition(1);
+
+    bool did_catch_player = engine.CheckIfCaught(user, monster_vector, flash_monster);
+    REQUIRE(!did_catch_player);
+  }
+
+  SECTION("Flash Monster Did Not Catch Player") {
+    user.SetXPosition(775);
+    user.SetYPosition(790);
+
+    flash_monster.SetXPosition(8);
+    flash_monster.SetYPosition(8);
+
+    bool did_catch_player = engine.CheckIfCaught(user, monster_vector, flash_monster);
+    REQUIRE(!did_catch_player);
+  }
+
+}
+
+TEST_CASE("Check If Player Burned") {
+  std::vector<Board> board_vector;
+
+  SECTION("Fire Did Burn Player") {
+    user.SetXPosition(100);
+    user.SetYPosition(100);
+
+    board_piece.SetXPos(100);
+    board_piece.SetYPos(100);
+
+    board_vector.push_back(board_piece);
+
+    bool did_burn_player = engine.CheckIfBurned(user, board_vector);
+    REQUIRE(did_burn_player);
+  }
+
+  SECTION("Fire Did Not Burn Player") {
+    board_vector.clear();
+
+    user.SetXPosition(100);
+    user.SetYPosition(100);
+
+    board_piece.SetXPos(1);
+    board_piece.SetYPos(1);
+
+    board_vector.push_back(board_piece);
+
+    bool did_burn_player = engine.CheckIfBurned(user, board_vector);
+    REQUIRE(!did_burn_player);
+  }
 }

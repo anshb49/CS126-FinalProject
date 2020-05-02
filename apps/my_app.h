@@ -7,8 +7,7 @@
 
 #include "mylibrary/leaderboard.h"
 #include "mylibrary/player.h"
-#include "mylibrary/monster.h"
-#include "mylibrary/flashmonster.h"
+#include "mylibrary/engine.h"
 
 namespace myapp {
 

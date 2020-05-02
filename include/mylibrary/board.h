@@ -19,6 +19,8 @@ class Board {
  public:
   int GetXPos();
   int GetYPos();
+  int SetXPos(int new_loc);
+  int SetYPos(int new_loc);
 
 
 };
