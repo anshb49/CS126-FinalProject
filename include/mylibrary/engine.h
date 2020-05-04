@@ -5,6 +5,7 @@
 #ifndef FINALPROJECT_ENGINE_H
 #define FINALPROJECT_ENGINE_H
 #include <vector>
+#include <cstdlib>
 
 #include "mylibrary/monster.h"
 #include "mylibrary/player.h"
@@ -34,5 +35,13 @@ class Engine {
    * @return - true if the player was bruned, otherwise false
    */
   bool CheckIfBurned(Player current_player, std::vector<Board> pieces);
+
+  /**
+   * Changes the position of the flash monster if it generates a position
+   * that is at the same position of the player
+   * @param current_player - the player to compare the position to
+   * @param flash_monster - the current flash monster
+   */
+  void FixFlashPosition(Player current_player, FlashMonster flash_monster);
 
 };

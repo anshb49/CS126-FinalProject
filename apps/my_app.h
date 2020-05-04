@@ -24,6 +24,7 @@ class MyApp : public cinder::app::App {
   void DrawMonster();
   void DrawBackground();
   void DrawFlashMonster();
+  void DrawTimer();
 
   bool CheckIfBurned(Player current_player, vector<Board> pieces);
   bool CheckIfCaught(Player current_player, vector<Monster> monsters);

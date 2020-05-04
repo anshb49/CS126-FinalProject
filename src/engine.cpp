@@ -1,7 +1,7 @@
 //
 // Created by Ansh Bhalla on 5/2/20.
 //
-
+#include <iostream>
 #include "mylibrary/engine.h"
 
 bool Engine::CheckIfCaught(Player current_player, std::vector<Monster> monster_vector, FlashMonster flash_monster) {
@@ -30,4 +30,11 @@ bool Engine::CheckIfBurned(Player current_player, std::vector<Board> pieces) {
     }
   }
   return false;
+}
+
+void Engine::FixFlashPosition(Player current_player, FlashMonster flash_monster) {
+  if (abs(current_player.GetXPosition() - flash_monster.GetXPosition()) <= 40
+      && abs(current_player.GetYPosition() - flash_monster.GetYPosition()) <= 40) {
+    flash_monster.ChangePosition();
+  }
 }

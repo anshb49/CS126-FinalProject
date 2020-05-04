@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <chrono>
 #include <string>
+#include "cinder/audio/Voice.h"
 
 
 using std::chrono::duration_cast;
@@ -23,12 +24,9 @@ Player player((string&)"initial name", 0);
 Monster monster;
 FlashMonster flash_monster;
 Engine engine;
-
 const char kBoldFont[] = "Arial-BoldMT";
 
-
 bool should_start_time = true;
-
 bool is_burned = false;
 bool is_caught = false;
 int lava_counter = 1;
@@ -40,6 +38,10 @@ bool did_add_score = false;
 const int kAmount = 3;
 bool printed_game_over = false;
 int flash_wait_counter = 0;
+
+cinder::audio::VoiceRef background_music;
+cinder::audio::SourceFileRef back_sound = cinder::audio::
+    load( cinder::app::loadAsset( "danger_song_short.m4a" ) );
 
 const string kInstructions = "Use the arrow keys to escape from the monsters that"
                              " are chasing you. Do not get burned by the fire."
@@ -81,6 +83,9 @@ void MyApp::setup() {
     board_pieces.push_back(current_piece);
   }
   monster_vector.push_back(monster);
+
+  background_music = cinder::audio::Voice::create(back_sound);
+  background_music->start();
 }
 
 void MyApp::update() {
@@ -123,6 +128,7 @@ void MyApp::draw() {
 
     cinder::gl::clear();
     DrawBackground();
+    DrawTimer();
     DrawUser();
     DrawBoard();
     DrawMonster();
@@ -217,6 +223,7 @@ void MyApp::DrawFlashMonster() {
 
   if (flash_wait_counter >= 20) {
     flash_monster.ChangePosition();
+    engine.FixFlashPosition(player, flash_monster);
     flash_wait_counter = 0;
   }
   flash_wait_counter++;
@@ -232,6 +239,7 @@ void MyApp::DrawFlashMonster() {
 void MyApp::DrawBoard() {
   auto back_texture =
       cinder::gl::Texture::create(ci::loadImage(loadAsset("fire1.png")));
+
   if (lava_counter == 1) {
     lava_counter++;
   } else if (lava_counter == 2) {
@@ -343,12 +351,27 @@ void MyApp::DrawBackground() {
   } else {
     auto back_texture =
         cinder::gl::Texture::create(ci::loadImage(loadAsset("rock_texture.png")));
-    ci::gl::color(ci::ColorA(1, 1, 1, 1));
+    ci::gl::color(ci::ColorA(0.2, 0.3, 0.5, 4));
     cinder::gl::draw(back_texture, ci::Rectf({0,
                                               0},
                                              {800,
                                               800}));
   }
+}
+
+void MyApp::DrawTimer() {
+  const cinder::vec2 center = getWindowCenter();
+  const cinder::ivec2 size = {800, 200};
+  const cinder::Color color = cinder::Color::white();
+  ci::gl::color(ci::ColorA(1, 1, 1, 1));
+  std::chrono::high_resolution_clock::time_point t2 =
+      std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> time_span =
+      duration_cast<std::chrono::duration<double>>(t2 - t1);
+
+  int current_time = time_span.count();
+  PrintText(std::to_string(current_time),
+            color, size, {20, 120});
 }
 
 }

@@ -280,3 +280,20 @@ TEST_CASE("Check If Player Burned") {
     REQUIRE(!did_burn_player);
   }
 }
+
+
+TEST_CASE("Check If Correct FlashMonster Position") {
+  user.SetXPosition(400);
+  user.SetYPosition(400);
+
+  SECTION("Should Change Position") {
+    FlashMonster flash2;
+    flash2.SetXPosition(400);
+    flash2.SetYPosition(400);
+    engine.FixFlashPosition(user, flash2);
+
+    bool did_change_position = flash_monster.GetXPosition() != 400
+        && flash_monster.GetYPosition() != 400;
+    REQUIRE(did_change_position);
+  }
+}
