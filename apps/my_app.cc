@@ -1,7 +1,6 @@
 // Copyright (c) 2020 [Your Name]. All rights reserved.
 
 #include "my_app.h"
-
 #include <cinder/app/App.h>
 #include <cinder/Font.h>
 #include <cinder/Text.h>
@@ -24,8 +23,8 @@ Player player((string&)"initial name", 0);
 Monster monster;
 FlashMonster flash_monster;
 Engine engine;
-const char kBoldFont[] = "Arial-BoldMT";
 
+const char kBoldFont[] = "Arial-BoldMT";
 bool should_start_time = true;
 bool is_burned = false;
 bool is_caught = false;
@@ -50,7 +49,7 @@ const string kWelcome = "Welcome To Escape";
 const string kGetReady = "GET READY";
 int loading_counter = 1;
 int welcome_count = 0;
-const int kWelcomeTime = 300;
+const int kWelcomeTime = 200;
 
 
 cinder::gl::Texture2dRef image;
@@ -65,9 +64,6 @@ namespace myapp {
 using cinder::app::KeyEvent;
 vector<Board> board_pieces;
 vector<Monster> monster_vector;
-const int kNumFireEasy = 14;
-const int kNumFireMedium = 20;
-const int kNumFireHard = 26;
 int current_game_level = 0;
 
 
@@ -80,13 +76,21 @@ MyApp::MyApp() :
     game_level{FLAGS_level}{};
 
 void MyApp::setup() {
-  std::cout << game_level;
-  current_game_level = DecideGameLevel();
+
+  current_game_level = engine.DecideGameLevel(game_level);
+  std::cout << current_game_level;
   monster_vector.clear();
   board_pieces.clear();
 
+
   for (int i = 0; i < current_game_level; i++) {
     Board current_piece;
+    bool is_on_player = current_piece.GetXPos() <= 15
+        || (current_piece.GetYPos() >= 375 && current_piece.GetYPos() <= 415);
+    if (is_on_player) {
+      current_piece.SetXPos(rand() % 750 + 40);
+      current_piece.SetXPos(rand() % 750 + 30);
+    }
     board_pieces.push_back(current_piece);
   }
   monster_vector.push_back(monster);
@@ -284,7 +288,6 @@ void MyApp::DrawBoard() {
                                              {board_pieces[i].GetXPos() + 75.0,
                                              board_pieces[i].GetYPos() + 75.0}));
   }
-
 }
 
 
@@ -298,7 +301,8 @@ void PrintText(const string& text, const C& color, const cinder::ivec2& size,
       .font(cinder::Font(kBoldFont, 30))
       .size(size)
       .color(color)
-      .backgroundColor(cinder::ColorA(0, 0, 0, 0))
+      .backgroundColor(
+          cinder::ColorA(0, 0, 0, 0))
       .text(text);
 
   const auto box_size = box.getSize();
@@ -366,7 +370,6 @@ void MyApp::DrawBackground() {
     PrintText(kGetReady, color, size, {center.x, center.y + (2) * 100});
     PrintText(kLoading, color, size, {center.x, center.y + (3) * 100});
 
-
     if (loading_counter == 1) {
       PrintText("...", color, size,
           {center.x + 70, center.y + (3) * 100});
@@ -407,15 +410,6 @@ void MyApp::DrawTimer() {
             color, size, {20, 120});
 }
 
-int MyApp::DecideGameLevel() {
-  bool is_invalid_level = game_level != 1 || game_level != 2 || game_level != 3;
-  if (is_invalid_level || game_level == 1) {
-    return kNumFireEasy;
-  } else if (game_level == 2) {
-    return kNumFireMedium;
-  } else {
-    return kNumFireHard;
-  }
-}
+
 
 }

@@ -17,8 +17,8 @@
 class Board {
 
  private:
-  int x = (rand() % 800) + 1;
-  int y = (rand() % 800) + 1;
+  int x = (rand() % 780) + 1;
+  int y = (rand() % 780) + 1;
 
  public:
   int GetXPos();

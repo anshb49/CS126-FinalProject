@@ -14,6 +14,10 @@
 #endif  // FINALPROJECT_ENGINE_H
 
 class Engine {
+ private:
+  const int kNumFireEasy = 14;
+  const int kNumFireMedium = 20;
+  const int kNumFireHard = 26;
 
  public:
   /**
@@ -43,5 +47,7 @@ class Engine {
    * @param flash_monster - the current flash monster
    */
   void FixFlashPosition(Player current_player, FlashMonster flash_monster);
+
+  int DecideGameLevel(int level);
 
 };

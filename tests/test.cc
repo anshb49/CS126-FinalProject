@@ -3,12 +3,8 @@
 #define CATCH_CONFIG_MAIN
 
 #include <catch2/catch.hpp>
-#include <cinder/Rand.h>
-
 #include <mylibrary/engine.h>
 #include <mylibrary/player.h>
-
-
 
 
 Player user((std::string&)"initial name", 0);;
@@ -18,9 +14,7 @@ FlashMonster flash_monster;
 Board board_piece;
 
 
-
 TEST_CASE("Change Direction Correctly for Player") {
-
   user.SetXPosition(50);
   user.SetYPosition(50);
 
@@ -50,32 +44,31 @@ TEST_CASE("Change Direction Correctly for Player") {
 }
 
 TEST_CASE("Change Direction Correctly for Monster") {
-
   monster.SetXPosition(50);
   monster.SetYPosition(50);
   int speed = monster.GetSpeed();
 
   SECTION("Move Right Correct Distance") {
     monster.MoveRight();
-    bool is_correct_distance = monster.GetXPosition() == 50+speed;
+    bool is_correct_distance = monster.GetXPosition() == 50 + speed;
     REQUIRE(is_correct_distance);
   }
 
   SECTION("Move Left Correct Distance") {
     monster.MoveLeft();
-    bool is_correct_distance = monster.GetXPosition() == 50-speed;
+    bool is_correct_distance = monster.GetXPosition() == 50 - speed;
     REQUIRE(is_correct_distance);
   }
 
   SECTION("Move Up Correct Distance") {
     monster.MoveUp();
-    bool is_correct_distance = monster.GetYPosition() == 50-speed;
+    bool is_correct_distance = monster.GetYPosition() == 50 - speed;
     REQUIRE(is_correct_distance);
   }
 
   SECTION("Move Down Correct Distance") {
     monster.MoveDown();
-    bool is_correct_distance = monster.GetYPosition() == 50+speed;
+    bool is_correct_distance = monster.GetYPosition() == 50 + speed;
     REQUIRE(is_correct_distance);
   }
 
@@ -93,7 +86,7 @@ TEST_CASE("Check Correct Speed for Monster") {
 }
 
 
-TEST_CASE("Contains random Board positions") {
+TEST_CASE("Contains Random Board positions") {
   Board board1;
   Board board2;
 
@@ -101,57 +94,13 @@ TEST_CASE("Contains random Board positions") {
     bool is_different_x = board1.GetXPos() != board2.GetXPos();
     REQUIRE(is_different_x);
   }
-}
 
-
-TEST_CASE("Check Not Going Out Of Screen Boundaries") {
-  user.SetXPosition(790);
-
-  SECTION("Check Move Right Positions") {
-    user.MoveRight();
-    int xpos = user.GetXPosition();
-    bool is_correct_pos = xpos <= 800;
-    REQUIRE(is_correct_pos);
-  }
-
-  SECTION("Check Move Left Positions") {
-    user.MoveLeft();
-    int xpos = user.GetXPosition();
-    bool is_correct_pos = xpos >= 0;
-    REQUIRE(is_correct_pos);
-  }
-
-  SECTION("Check Move Up Positions") {
-    user.MoveUp();
-    int ypos = user.GetYPosition();
-    bool is_correct_pos = ypos >= 0;
-    REQUIRE(is_correct_pos);
-  }
-
-  SECTION("Check Move Down Positions") {
-    user.MoveDown();
-    int ypos = user.GetYPosition();
-    bool is_correct_pos = ypos <= 800;
-    REQUIRE(is_correct_pos);
-  }
-
-}
-
-
-
-TEST_CASE("Check Game Over Player Position") {
-  user.SetGameOverPosition();
-
-  SECTION("Check X Position") {
-    bool is_correct_position = user.GetXPosition() == -1000;
-    REQUIRE(is_correct_position);
-  }
-
-  SECTION("Check Y Position") {
-    bool is_correct_position = user.GetYPosition() == 1000;
-    REQUIRE(is_correct_position);
+  SECTION("Check Y Positions Not Same") {
+    bool is_different_y = board1.GetYPos() != board2.GetYPos();
+    REQUIRE(is_different_y);
   }
 }
+
 
 TEST_CASE("Check If Stayed Within Board") {
 
@@ -193,7 +142,7 @@ TEST_CASE("Check If Stayed Within Board") {
 
 }
 
-TEST_CASE("Checks If Monster Caught Player") {
+TEST_CASE("Checks If Monsters Caught Player") {
   std::vector<Monster> monster_vector;
 
   SECTION("Normal Monster Did Catch Player") {
@@ -204,7 +153,8 @@ TEST_CASE("Checks If Monster Caught Player") {
     monster.SetYPosition(785);
     monster_vector.push_back(monster);
 
-    bool did_catch_player = engine.CheckIfCaught(user, monster_vector, flash_monster);
+    bool did_catch_player = engine.CheckIfCaught(user,
+        monster_vector, flash_monster);
     REQUIRE(did_catch_player);
   }
 
@@ -215,7 +165,8 @@ TEST_CASE("Checks If Monster Caught Player") {
     flash_monster.SetXPosition(770);
     flash_monster.SetYPosition(785);
 
-    bool did_catch_player = engine.CheckIfCaught(user, monster_vector, flash_monster);
+    bool did_catch_player = engine.CheckIfCaught(user,
+        monster_vector, flash_monster);
     REQUIRE(did_catch_player);
   }
 
@@ -232,7 +183,8 @@ TEST_CASE("Checks If Monster Caught Player") {
     flash_monster.SetXPosition(1);
     flash_monster.SetXPosition(1);
 
-    bool did_catch_player = engine.CheckIfCaught(user, monster_vector, flash_monster);
+    bool did_catch_player = engine.CheckIfCaught(user,
+        monster_vector, flash_monster);
     REQUIRE(!did_catch_player);
   }
 
@@ -243,7 +195,8 @@ TEST_CASE("Checks If Monster Caught Player") {
     flash_monster.SetXPosition(8);
     flash_monster.SetYPosition(8);
 
-    bool did_catch_player = engine.CheckIfCaught(user, monster_vector, flash_monster);
+    bool did_catch_player = engine.CheckIfCaught(user,
+        monster_vector, flash_monster);
     REQUIRE(!did_catch_player);
   }
 
@@ -295,5 +248,46 @@ TEST_CASE("Check If Correct FlashMonster Position") {
     bool did_change_position = flash_monster.GetXPosition() != 400
         && flash_monster.GetYPosition() != 400;
     REQUIRE(did_change_position);
+  }
+}
+
+TEST_CASE("Check If Monster Moves In Correct Direction") {
+  user.SetXPosition(400);
+  user.SetYPosition(400);
+
+  SECTION("Does Move Left") {
+    monster.SetXPosition(401);
+    monster.SetYPosition(400);
+
+    bool did_move_left = monster.MoveTowardsPlayer(user.GetXPosition(),
+        user.GetYPosition()) == "left";
+    REQUIRE(did_move_left);
+  }
+
+  SECTION("Does Move Right") {
+    monster.SetXPosition(399);
+    monster.SetYPosition(400);
+
+    bool did_move_right = monster.MoveTowardsPlayer(
+        user.GetXPosition(),user.GetYPosition()) == "right";
+    REQUIRE(did_move_right);
+  }
+
+  SECTION("Does Move Up") {
+    monster.SetXPosition(400);
+    monster.SetYPosition(401);
+
+    bool did_move_up = monster.MoveTowardsPlayer(user.GetXPosition(),
+                                                   user.GetYPosition()) == "up";
+    REQUIRE(did_move_up);
+  }
+
+  SECTION("Does Move Down") {
+    monster.SetXPosition(400);
+    monster.SetYPosition(399);
+
+    bool did_move_down = monster.MoveTowardsPlayer(
+        user.GetXPosition(),user.GetYPosition()) == "down";
+    REQUIRE(did_move_down);
   }
 }

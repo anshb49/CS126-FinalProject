@@ -38,3 +38,15 @@ void Engine::FixFlashPosition(Player current_player, FlashMonster flash_monster)
     flash_monster.ChangePosition();
   }
 }
+
+int Engine::DecideGameLevel(int game_level) {
+  std::cout << game_level;
+  bool is_invalid_level = game_level != 1 && game_level != 2 && game_level != 3;
+  if (is_invalid_level || game_level == 1) {
+    return kNumFireEasy;
+  } else if (game_level == 2) {
+    return kNumFireMedium;
+  } else {
+    return kNumFireHard;
+  }
+}

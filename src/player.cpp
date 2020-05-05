@@ -70,11 +70,6 @@ void Player::SetYPosition(int loc) {
   current_y = loc;
 }
 
-void Player::SetGameOverPosition() {
-  current_x = -1000;
-  current_y = 1000;
-}
-
 void Player::SetScore(int new_score) {
   current_score = new_score;
 }

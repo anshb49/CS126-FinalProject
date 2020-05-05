@@ -49,22 +49,25 @@ void Monster::SetSpeed(int new_speed) {
   speed = new_speed;
 }
 
-void Monster::MoveTowardsPlayer(int user_x, int user_y) {
-  //Move Monster location based on the current Player location
+std::string Monster::MoveTowardsPlayer(int user_x, int user_y) {
   int x_distance = user_x - current_x;
   int y_distance = user_y - current_y;
 
   if (abs(x_distance) >= abs(y_distance)) {
     if (x_distance <= 0) {
       MoveLeft();
+      return "left";
     } else {
       MoveRight();
+      return "right";
     }
   } else {
     if (y_distance <= 0) {
       MoveUp();
+      return "up";
     } else {
       MoveDown();
+      return "down";
     }
   }
 
