@@ -14,6 +14,7 @@
 #include "cinder/audio/Voice.h"
 
 
+
 using std::chrono::duration_cast;
 using std::chrono::seconds;
 using std::chrono::system_clock;
@@ -23,6 +24,7 @@ Player player((string&)"initial name", 0);
 Monster monster;
 FlashMonster flash_monster;
 Engine engine;
+InvinciblePower power;
 
 const char kBoldFont[] = "Arial-BoldMT";
 bool should_start_time = true;
@@ -88,6 +90,12 @@ void MyApp::setup() {
     if (is_on_player) {
       current_piece.SetXPos(rand() % 750 + 40);
       current_piece.SetXPos(rand() % 750 + 30);
+    }
+
+    while (abs(power.GetXPosition() - current_piece.GetXPos()) <= 15
+    && abs(power.GetYPosition() - current_piece.GetYPos()) <= 15) {
+      power.SetXPosition(power.ChangePosition());
+      power.SetYPosition(power.ChangePosition());
     }
     board_pieces.push_back(current_piece);
   }

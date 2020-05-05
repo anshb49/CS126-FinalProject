@@ -7,11 +7,13 @@
 #include "mylibrary/leaderboard.h"
 #include "mylibrary/player.h"
 #include "mylibrary/engine.h"
+#include "mylibrary/invincible_power.h"
 
 namespace myapp {
 
 class MyApp : public cinder::app::App {
  public:
+
   /**
    * Initializes Application with window size and reads program arguments
    */
