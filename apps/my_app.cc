@@ -43,10 +43,8 @@ cinder::audio::VoiceRef background_music;
 cinder::audio::SourceFileRef back_sound = cinder::audio::
     load( cinder::app::loadAsset( "danger_song_short.m4a" ) );
 
-const string kInstructions = "Use the arrow keys to escape from the monsters that"
-                             " are chasing you. Do not get burned by the fire."
-                             " Beware of the Flash Monster that may surprise you"
-                             " during your escape";
+const string kInstructions = "Use the arrow keys to escape from the Monsters. "
+                             "Beware of the Flash Monster and the Fire!";
 const string kLoading = "Loading";
 int loading_counter = 1;
 int welcome_count = 0;
@@ -223,7 +221,12 @@ void MyApp::DrawFlashMonster() {
 
   if (flash_wait_counter >= 20) {
     flash_monster.ChangePosition();
-    engine.FixFlashPosition(player, flash_monster);
+    if (abs(player.GetXPosition() - flash_monster.GetXPosition()) <= 40
+           && abs(player.GetYPosition() - flash_monster.GetYPosition()) <= 40) {
+      flash_monster.ChangePosition();
+      engine.FixFlashPosition(player, flash_monster);
+    }
+
     flash_wait_counter = 0;
   }
   flash_wait_counter++;
@@ -329,10 +332,18 @@ void MyApp::DrawBackground() {
   }
 
   if (welcome_count <= kWelcomeTime) {
-    cinder::gl::clear(cinder::Color(0, 1, 1));
     const cinder::vec2 center = getWindowCenter();
     const cinder::ivec2 size = {800, 200};
-    const cinder::Color color = cinder::Color::black();
+    const cinder::Color color = cinder::Color::white();
+
+    auto back_texture =
+        cinder::gl::Texture::create(ci::loadImage(loadAsset("welcome_back.png")));
+    ci::gl::color(ci::ColorA(1, 1, 1, 1));
+    cinder::gl::draw(back_texture, ci::Rectf({0,
+                                              0},
+                                             {1000,
+                                              1000}));
+
     PrintText("Welcome to ESCAPE", color, size, {center.x, center.y + (0) * 50});
     PrintText(kInstructions, color, size, {center.x, center.y + (1) * 50});
     PrintText(kLoading, color, size, {center.x, center.y + (2) * 100});
@@ -351,7 +362,7 @@ void MyApp::DrawBackground() {
   } else {
     auto back_texture =
         cinder::gl::Texture::create(ci::loadImage(loadAsset("rock_texture.png")));
-    ci::gl::color(ci::ColorA(0.2, 0.3, 0.5, 4));
+    ci::gl::color(ci::ColorA(0.2, 0.3, 0.4, 8));
     cinder::gl::draw(back_texture, ci::Rectf({0,
                                               0},
                                              {800,
