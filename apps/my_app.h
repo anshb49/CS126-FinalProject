@@ -30,9 +30,12 @@ class MyApp : public cinder::app::App {
   bool CheckIfCaught(Player current_player, vector<Monster> monsters);
   void DrawGameOverScreen();
 
+  int DecideGameLevel();
+
  private:
   LeaderBoard leaderboard;
   const std::string user_name;
+  const size_t game_level;
   std::vector<int> top_player_scores;
   std::vector<std::string> top_player_names;
 };

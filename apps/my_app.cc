@@ -46,6 +46,8 @@ cinder::audio::SourceFileRef back_sound = cinder::audio::
 const string kInstructions = "Use the arrow keys to escape from the Monsters. "
                              "Beware of the Flash Monster and the Fire!";
 const string kLoading = "Loading";
+const string kWelcome = "Welcome To Escape";
+const string kGetReady = "GET READY";
 int loading_counter = 1;
 int welcome_count = 0;
 const int kWelcomeTime = 300;
@@ -63,20 +65,27 @@ namespace myapp {
 using cinder::app::KeyEvent;
 vector<Board> board_pieces;
 vector<Monster> monster_vector;
-const int kNumFire = 14;
+const int kNumFireEasy = 14;
+const int kNumFireMedium = 20;
+const int kNumFireHard = 26;
+int current_game_level = 0;
 
 
 DECLARE_string(name);
+DECLARE_uint32(level);
 
 MyApp::MyApp() :
     leaderboard{cinder::app::getAssetPath(kDbPath).string()},
-    user_name{FLAGS_name}{}
-
+    user_name{FLAGS_name},
+    game_level{FLAGS_level}{};
 
 void MyApp::setup() {
+  std::cout << game_level;
+  current_game_level = DecideGameLevel();
   monster_vector.clear();
   board_pieces.clear();
-  for (int i = 0; i < kNumFire; i++) {
+
+  for (int i = 0; i < current_game_level; i++) {
     Board current_piece;
     board_pieces.push_back(current_piece);
   }
@@ -162,34 +171,33 @@ void MyApp::DrawUser() {
   if (is_burned || is_caught) {
     return;
   }
-    auto back_texture =
-            cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja1.png")));
-    if (ninja_counter == 1) {
-        ninja_counter++;
-    } else if (ninja_counter == 2) {
+  auto back_texture =
+            cinder::gl::Texture::create(ci::
+            loadImage(loadAsset("running_ninja1.png")));
+    if (ninja_counter == 2) {
         back_texture =
                 cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja2.png")));
-        ninja_counter++;
     } else if (ninja_counter == 3) {
         back_texture =
                 cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja3.png")));
-        ninja_counter++;
     } else if (ninja_counter == 4) {
         back_texture =
                 cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja4.png")));
-        ninja_counter++;
     } else if (ninja_counter == 5) {
         back_texture =
                 cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja5.png")));
-        ninja_counter++;
     } else if (ninja_counter == 6) {
         back_texture =
                 cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja6.png")));
-        ninja_counter = 1;
+    }
+
+    if (ninja_counter < 6) {
+      ninja_counter++;
+    } else {
+      ninja_counter = 1;
     }
 
     ci::gl::color(ci::ColorA(1, 1, 1, 1));
-
     cinder::gl::draw(back_texture, ci::Rectf({player.GetXPosition(),
                                               player.GetYPosition()},
                                              {player.GetXPosition() + 100,
@@ -197,9 +205,9 @@ void MyApp::DrawUser() {
 }
 
 void MyApp::DrawMonster() {
-
   auto back_texture =
-      cinder::gl::Texture::create(ci::loadImage(loadAsset("monster_pic.png")));
+      cinder::gl::Texture::create(
+          ci::loadImage(loadAsset("monster_pic.png")));
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
 
@@ -230,6 +238,7 @@ void MyApp::DrawFlashMonster() {
     flash_wait_counter = 0;
   }
   flash_wait_counter++;
+
   cinder::gl::draw(back_texture,
                    ci::Rectf({flash_monster.GetXPosition(),
                               flash_monster.GetYPosition()},
@@ -241,32 +250,35 @@ void MyApp::DrawFlashMonster() {
 
 void MyApp::DrawBoard() {
   auto back_texture =
-      cinder::gl::Texture::create(ci::loadImage(loadAsset("fire1.png")));
+      cinder::gl::Texture::create(
+          ci::loadImage(loadAsset("fire1.png")));
 
-  if (lava_counter == 1) {
-    lava_counter++;
-  } else if (lava_counter == 2) {
+  if (lava_counter == 2) {
     back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("fire2.png")));
-    lava_counter++;
+        cinder::gl::Texture::create(
+            ci::loadImage(loadAsset("fire2.png")));
   } else if (lava_counter == 3) {
     back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("fire3.png")));
-    lava_counter++;
+        cinder::gl::Texture::create(
+            ci::loadImage(loadAsset("fire3.png")));
   } else if (lava_counter == 4) {
     back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("fire4.png")));
-    lava_counter++;
+        cinder::gl::Texture::create(
+            ci::loadImage(loadAsset("fire4.png")));
   } else if (lava_counter == 5) {
     back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("fire5.png")));
+        cinder::gl::Texture::create(
+            ci::loadImage(loadAsset("fire5.png")));
+  }
+
+  if (lava_counter < 5) {
+    lava_counter++;
+  } else {
     lava_counter = 1;
   }
 
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
-
   for (int i = 0; i < board_pieces.size(); i++) {
-
     cinder::gl::draw(back_texture, ci::Rectf({board_pieces[i].GetXPos(),
                                              board_pieces[i].GetYPos()},
                                              {board_pieces[i].GetXPos() + 75.0,
@@ -290,7 +302,8 @@ void PrintText(const string& text, const C& color, const cinder::ivec2& size,
       .text(text);
 
   const auto box_size = box.getSize();
-  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
+  const cinder::vec2 locp = {loc.x - box_size.x / 2,
+                             loc.y - box_size.y / 2};
   const auto surface = box.render();
   const auto texture = cinder::gl::Texture::create(surface);
   cinder::gl::draw(texture, locp);
@@ -316,9 +329,11 @@ void MyApp::DrawGameOverScreen() {
 
 
   size_t row = 0;
-  PrintText("Top Scores:", color, size, {center.x, center.y + 50 + ++row * 50});
+  PrintText("Top Scores:", color, size,
+      {center.x, center.y + 50 + ++row * 50});
   for (int i = 0; i < top_player_scores.size(); i++) {
-    PrintText(top_player_names[i] + " - " + std::to_string(top_player_scores[i]),
+    PrintText(top_player_names[i] + " - " +
+    std::to_string(top_player_scores[i]),
               color, size, {center.x, center.y + 50 + (++row) * 50});
   }
 
@@ -337,25 +352,32 @@ void MyApp::DrawBackground() {
     const cinder::Color color = cinder::Color::white();
 
     auto back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("welcome_back.png")));
+        cinder::gl::Texture::create(ci::
+        loadImage(loadAsset("welcome_back.png")));
     ci::gl::color(ci::ColorA(1, 1, 1, 1));
     cinder::gl::draw(back_texture, ci::Rectf({0,
                                               0},
                                              {1000,
                                               1000}));
 
-    PrintText("Welcome to ESCAPE", color, size, {center.x, center.y + (0) * 50});
+    PrintText(kWelcome, color, size,
+        {center.x, center.y + (0) * 50});
     PrintText(kInstructions, color, size, {center.x, center.y + (1) * 50});
-    PrintText(kLoading, color, size, {center.x, center.y + (2) * 100});
+    PrintText(kGetReady, color, size, {center.x, center.y + (2) * 100});
+    PrintText(kLoading, color, size, {center.x, center.y + (3) * 100});
+
 
     if (loading_counter == 1) {
-      PrintText("...", color, size, {center.x + 70, center.y + (2) * 100});
+      PrintText("...", color, size,
+          {center.x + 70, center.y + (3) * 100});
       loading_counter++;
     } else if (loading_counter == 2) {
-      PrintText("....", color, size, {center.x + 70, center.y + (2) * 100});
+      PrintText("....", color, size,
+          {center.x + 70, center.y + (3) * 100});
       loading_counter++;
     } else {
-      PrintText(".....", color, size, {center.x + 70, center.y + (2) * 100});
+      PrintText(".....", color, size,
+          {center.x + 70, center.y + (3) * 100});
       loading_counter = 1;
     }
     welcome_count++;
@@ -383,6 +405,17 @@ void MyApp::DrawTimer() {
   int current_time = time_span.count();
   PrintText(std::to_string(current_time),
             color, size, {20, 120});
+}
+
+int MyApp::DecideGameLevel() {
+  bool is_invalid_level = game_level != 1 || game_level != 2 || game_level != 3;
+  if (is_invalid_level || game_level == 1) {
+    return kNumFireEasy;
+  } else if (game_level == 2) {
+    return kNumFireMedium;
+  } else {
+    return kNumFireHard;
+  }
 }
 
 }
