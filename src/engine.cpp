@@ -12,11 +12,11 @@ bool Engine::CheckIfCaught(Player current_player, std::vector<Monster> monster_v
     }
   }
 
-  if (abs(current_player.GetXPosition() - flash_monster.GetXPosition()) <= 40
-      && abs(current_player.GetYPosition() - flash_monster.GetYPosition()) <= 40) {
-    return true;
-  }
-  return false;
+  bool is_touching_flash = (abs(
+      current_player.GetXPosition() - flash_monster.GetXPosition()) <= 40
+          && abs(current_player.GetYPosition()
+          - flash_monster.GetYPosition()) <= 40);
+  return is_touching_flash;
 }
 
 
@@ -40,7 +40,6 @@ void Engine::FixFlashPosition(Player current_player, FlashMonster flash_monster)
 }
 
 int Engine::DecideGameLevel(int game_level) {
-  std::cout << game_level;
   bool is_invalid_level = game_level != 1 && game_level != 2 && game_level != 3;
   if (is_invalid_level || game_level == 1) {
     return kNumFireEasy;

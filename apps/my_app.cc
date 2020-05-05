@@ -53,7 +53,8 @@ const int kWelcomeTime = 200;
 
 
 cinder::gl::Texture2dRef image;
-auto fire_end_img = loadImage(cinder::app::loadAsset("fire_gameover.png"));
+auto fire_end_img = loadImage(cinder::app::
+    loadAsset("fire_gameover.png"));
 const char kDbPath[] = "test_scoreboard.db";
 std::chrono::high_resolution_clock::time_point t1 = std::chrono::
 high_resolution_clock::now();
@@ -76,12 +77,9 @@ MyApp::MyApp() :
     game_level{FLAGS_level}{};
 
 void MyApp::setup() {
-
   current_game_level = engine.DecideGameLevel(game_level);
-  std::cout << current_game_level;
   monster_vector.clear();
   board_pieces.clear();
-
 
   for (int i = 0; i < current_game_level; i++) {
     Board current_piece;
@@ -228,7 +226,8 @@ void MyApp::DrawMonster() {
 
 void MyApp::DrawFlashMonster() {
   auto back_texture =
-      cinder::gl::Texture::create(ci::loadImage(loadAsset("monster_pic.png")));
+      cinder::gl::Texture::create(ci::loadImage(
+          loadAsset("monster_pic.png")));
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
   if (flash_wait_counter >= 20) {
@@ -255,24 +254,29 @@ void MyApp::DrawFlashMonster() {
 void MyApp::DrawBoard() {
   auto back_texture =
       cinder::gl::Texture::create(
-          ci::loadImage(loadAsset("fire1.png")));
+          ci::loadImage(
+              loadAsset("fire1.png")));
 
   if (lava_counter == 2) {
     back_texture =
         cinder::gl::Texture::create(
-            ci::loadImage(loadAsset("fire2.png")));
+            ci::loadImage(
+                loadAsset("fire2.png")));
   } else if (lava_counter == 3) {
     back_texture =
         cinder::gl::Texture::create(
-            ci::loadImage(loadAsset("fire3.png")));
+            ci::loadImage(
+                loadAsset("fire3.png")));
   } else if (lava_counter == 4) {
     back_texture =
         cinder::gl::Texture::create(
-            ci::loadImage(loadAsset("fire4.png")));
+            ci::loadImage(
+                loadAsset("fire4.png")));
   } else if (lava_counter == 5) {
     back_texture =
         cinder::gl::Texture::create(
-            ci::loadImage(loadAsset("fire5.png")));
+            ci::loadImage(
+                loadAsset("fire5.png")));
   }
 
   if (lava_counter < 5) {
@@ -386,7 +390,8 @@ void MyApp::DrawBackground() {
     welcome_count++;
   } else {
     auto back_texture =
-        cinder::gl::Texture::create(ci::loadImage(loadAsset("rock_texture.png")));
+        cinder::gl::Texture::create(ci::
+        loadImage(loadAsset("rock_texture.png")));
     ci::gl::color(ci::ColorA(0.2, 0.3, 0.4, 8));
     cinder::gl::draw(back_texture, ci::Rectf({0,
                                               0},

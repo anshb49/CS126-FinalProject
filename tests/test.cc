@@ -291,3 +291,26 @@ TEST_CASE("Check If Monster Moves In Correct Direction") {
     REQUIRE(did_move_down);
   }
 }
+
+TEST_CASE("Change Fire Amount Based On Level") {
+
+  SECTION("Correctly Identifies Easy Level") {
+    bool is_correct_level = engine.DecideGameLevel(1) == 14;
+    REQUIRE(is_correct_level);
+  }
+
+  SECTION("Correctly Identifies Medium Level") {
+    bool is_correct_level = engine.DecideGameLevel(2) == 20;
+    REQUIRE(is_correct_level);
+  }
+
+  SECTION("Correctly Identifies Hard Level") {
+    bool is_correct_level = engine.DecideGameLevel(3) == 26;
+    REQUIRE(is_correct_level);
+  }
+
+  SECTION("Correct Default Level With Invalid Input") {
+    bool is_correct_level = engine.DecideGameLevel(10000) == 14;
+    REQUIRE(is_correct_level);
+  }
+}
