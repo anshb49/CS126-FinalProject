@@ -25,13 +25,16 @@ Author: [Ansh Bhalla]
  
 **How To Setup**  
 -
-- Download Cinder and extract that downloaded file into a seperate folder
-- Open this folder in CLion, and click the green run (play button) button 
+- Download Cinder
+- Extract that downloaded file into a seperate folder
+- Open this folder in CLion
+- Click the green run (play button) button 
 at the top right part of the screen
     - Doing this will build libcinder, and this process only
     has to be done once
 - Create a directory, calling it another name such as 
-my-projects in the downloaded cinder file. Clone this project into this folder
+my-projects in the downloaded cinder file
+- Clone this project into this folder
 
 **MacOS Users**
 -
