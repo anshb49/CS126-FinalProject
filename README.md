@@ -50,7 +50,7 @@ Find my-projects/my-app/cmake-build-debug/Debug/cinder-myapp/Contents/MacOS/cind
 
 **Controls**
 -
-###Keyboard
+Keyboard
 
 | Key | Action |
 | ---------------|----------------|
