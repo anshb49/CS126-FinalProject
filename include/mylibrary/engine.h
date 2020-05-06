@@ -10,6 +10,8 @@
 #include "mylibrary/monster.h"
 #include "mylibrary/player.h"
 #include "mylibrary/flashmonster.h"
+#include "mylibrary/invincible_power.h"
+
 
 #endif  // FINALPROJECT_ENGINE_H
 
@@ -18,6 +20,7 @@ class Engine {
   const int kNumFireEasy = 14;
   const int kNumFireMedium = 20;
   const int kNumFireHard = 26;
+
 
  public:
   /**
@@ -49,5 +52,9 @@ class Engine {
   void FixFlashPosition(Player current_player, FlashMonster flash_monster);
 
   int DecideGameLevel(int level);
+
+  bool DidGetPotion(Player player, InvinciblePower power);
+
+  InvinciblePower power;
 
 };

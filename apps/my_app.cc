@@ -24,12 +24,13 @@ Player player((string&)"initial name", 0);
 Monster monster;
 FlashMonster flash_monster;
 Engine engine;
-InvinciblePower power;
+//InvinciblePower power;
 
 const char kBoldFont[] = "Arial-BoldMT";
 bool should_start_time = true;
 bool is_burned = false;
 bool is_caught = false;
+bool is_invincible = false;
 int lava_counter = 1;
 int ninja_counter = 1;
 
@@ -51,7 +52,7 @@ const string kWelcome = "Welcome To Escape";
 const string kGetReady = "GET READY";
 int loading_counter = 1;
 int welcome_count = 0;
-const int kWelcomeTime = 200;
+const int kWelcomeTime = 10;
 
 
 cinder::gl::Texture2dRef image;
@@ -59,6 +60,9 @@ auto fire_end_img = loadImage(cinder::app::
     loadAsset("fire_gameover.png"));
 const char kDbPath[] = "test_scoreboard.db";
 std::chrono::high_resolution_clock::time_point t1 = std::chrono::
+high_resolution_clock::now();
+
+std::chrono::high_resolution_clock::time_point start_potion_time = std::chrono::
 high_resolution_clock::now();
 
 
@@ -92,10 +96,10 @@ void MyApp::setup() {
       current_piece.SetXPos(rand() % 750 + 30);
     }
 
-    while (abs(power.GetXPosition() - current_piece.GetXPos()) <= 15
-    && abs(power.GetYPosition() - current_piece.GetYPos()) <= 15) {
-      power.SetXPosition(power.ChangePosition());
-      power.SetYPosition(power.ChangePosition());
+    while (abs(engine.power.GetXPosition() - current_piece.GetXPos()) <= 15
+    && abs(engine.power.GetYPosition() - current_piece.GetYPos()) <= 15) {
+      engine.power.SetXPosition(engine.power.ChangePosition());
+      engine.power.SetYPosition(engine.power.ChangePosition());
     }
     board_pieces.push_back(current_piece);
   }
@@ -110,7 +114,16 @@ void MyApp::update() {
       std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> time_span =
       duration_cast<std::chrono::duration<double>>(t2 - t1);
+  std::chrono::duration<double> potion_span =
+      duration_cast<std::chrono::duration<double>>(t2 - start_potion_time);
   int time = time_span.count();
+  int potion_time = potion_span.count();
+
+
+  if (potion_time >= 7) {
+    is_invincible = false;
+  }
+
 
   if (time == next_time) {
       previous_time = next_time;
@@ -119,12 +132,12 @@ void MyApp::update() {
       monster_vector.push_back(new_monster);
   }
 
-
   is_burned = engine.CheckIfBurned(player, board_pieces);
   is_caught = engine.CheckIfCaught(player, monster_vector, flash_monster);
-  if ((is_burned || is_caught) && !did_add_score) {
+  std::cout << is_invincible;
+  if ((is_burned || is_caught) && !did_add_score && is_invincible==false) {
     player.SetScore(time);
-    leaderboard.AddScoreToLeaderBoard(user_name, time_span.count());
+    leaderboard.AddScoreToLeaderBoard(user_name, player.GetMyScore());
     did_add_score = true;
     return;
   }
@@ -136,11 +149,18 @@ void MyApp::draw() {
     cinder::gl::clear();
     DrawBackground();
   } else {
-    if (is_burned || is_caught) {
+    if ((is_burned || is_caught) && is_invincible==false) {
       top_player_scores = leaderboard.RetrieveHighScores(kAmount);
       top_player_names = leaderboard.RetrieveHighNames(kAmount);
       DrawGameOverScreen();
       return;
+    }
+
+    if (engine.DidGetPotion(player, engine.power)) {
+      engine.power.SetXPosition(1000);
+      engine.power.SetYPosition(1000);
+      is_invincible = true;
+      start_potion_time = std::chrono::high_resolution_clock::now();
     }
 
     cinder::gl::clear();
@@ -150,11 +170,13 @@ void MyApp::draw() {
     DrawBoard();
     DrawMonster();
     DrawFlashMonster();
+    DrawPotion();
+
   }
 }
 
 void MyApp::keyDown(KeyEvent event) {
-  if (is_burned || is_caught) {
+  if ((is_burned || is_caught) && is_invincible==false) {
     return;
   }
   switch (event.getCode()) {
@@ -178,7 +200,7 @@ void MyApp::keyDown(KeyEvent event) {
 }
 
 void MyApp::DrawUser() {
-  if (is_burned || is_caught) {
+  if ((is_burned || is_caught) && is_invincible==false) {
     return;
   }
   auto back_texture =
@@ -207,7 +229,10 @@ void MyApp::DrawUser() {
       ninja_counter = 1;
     }
 
-    ci::gl::color(ci::ColorA(1, 1, 1, 1));
+  ci::gl::color(ci::ColorA(1, 1, 1, 1));
+    if (is_invincible) {
+      ci::gl::color(ci::ColorA(0, 0.8, 1, 90));
+    }
     cinder::gl::draw(back_texture, ci::Rectf({player.GetXPosition(),
                                               player.GetYPosition()},
                                              {player.GetXPosition() + 100,
@@ -400,7 +425,7 @@ void MyApp::DrawBackground() {
     auto back_texture =
         cinder::gl::Texture::create(ci::
         loadImage(loadAsset("rock_texture.png")));
-    ci::gl::color(ci::ColorA(0.2, 0.3, 0.4, 8));
+    ci::gl::color(ci::ColorA(1, 1, 1, 1));
     cinder::gl::draw(back_texture, ci::Rectf({0,
                                               0},
                                              {800,
@@ -421,6 +446,19 @@ void MyApp::DrawTimer() {
   int current_time = time_span.count();
   PrintText(std::to_string(current_time),
             color, size, {20, 120});
+}
+
+void MyApp::DrawPotion() {
+  auto back_texture =
+      cinder::gl::Texture::create(ci::loadImage(
+          loadAsset("potion_img.png")));
+  ci::gl::color(ci::ColorA(1, 1, 1, 1));
+
+  cinder::gl::draw(back_texture,
+                   ci::Rectf({engine.power.GetXPosition(),
+                              engine.power.GetYPosition()},
+                             {engine.power.GetXPosition() + 60,
+                              engine.power.GetYPosition() + 45}));
 }
 
 

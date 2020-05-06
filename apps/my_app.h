@@ -7,7 +7,6 @@
 #include "mylibrary/leaderboard.h"
 #include "mylibrary/player.h"
 #include "mylibrary/engine.h"
-#include "mylibrary/invincible_power.h"
 
 namespace myapp {
 
@@ -84,6 +83,11 @@ class MyApp : public cinder::app::App {
    * database to display the top 3 scores in the game.
    */
   void DrawGameOverScreen();
+
+
+
+
+  void DrawPotion();
 
  private:
   LeaderBoard leaderboard;

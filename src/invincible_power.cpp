@@ -6,7 +6,7 @@
 
 
 int InvinciblePower::ChangePosition() {
-  return (rand() + 775) + 1;
+  return (rand() % 775) + 1;
 }
 
 int InvinciblePower::GetXPosition() {

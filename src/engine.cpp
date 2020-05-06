@@ -4,9 +4,11 @@
 #include <iostream>
 #include "mylibrary/engine.h"
 
+
+
 bool Engine::CheckIfCaught(Player current_player, std::vector<Monster> monster_vector, FlashMonster flash_monster) {
   for (int i = 0; i < monster_vector.size(); i++) {
-    if (abs(current_player.GetXPosition() - monster_vector[i].GetXPosition()) <= 50
+    if (abs(current_player.GetXPosition() - monster_vector[i].GetXPosition()) <= 30
         && abs(current_player.GetYPosition() - monster_vector[i].GetYPosition()) <= 50) {
       return true;
     }
@@ -47,5 +49,12 @@ int Engine::DecideGameLevel(int game_level) {
     return kNumFireMedium;
   } else {
     return kNumFireHard;
+  }
+}
+
+bool Engine::DidGetPotion(Player player, InvinciblePower power) {
+
+  if (abs(player.GetXPosition() - power.GetXPosition()) <= 40 && abs(player.GetYPosition() - power.GetYPosition()) <= 40) {
+    return true;
   }
 }
