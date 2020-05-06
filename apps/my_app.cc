@@ -96,10 +96,10 @@ void MyApp::setup() {
       current_piece.SetXPos(rand() % 750 + 30);
     }
 
-    while (abs(engine.GetPower().GetXPosition() - current_piece.GetXPos()) <= 15
-    && abs(engine.GetPower().GetYPosition() - current_piece.GetYPos()) <= 15) {
-      engine.GetPower().SetXPosition(engine.GetPower().GetRandomPosition());
-      engine.GetPower().SetYPosition(engine.GetPower().GetRandomPosition());
+    while (abs(engine.power.GetXPosition() - current_piece.GetXPos()) <= 15
+    && abs(engine.power.GetYPosition() - current_piece.GetYPos()) <= 15) {
+      engine.power.SetXPosition(engine.power.GetRandomPosition());
+      engine.power.SetYPosition(engine.power.GetRandomPosition());
     }
     board_pieces.push_back(current_piece);
   }
@@ -123,7 +123,6 @@ void MyApp::update() {
   if (potion_time >= 7) {
     is_invincible = false;
   }
-
 
   if (time == next_time) {
       previous_time = next_time;
@@ -154,9 +153,10 @@ void MyApp::draw() {
       return;
     }
 
-    if (engine.DidGetPotion(player, engine.GetPower())) {
-      engine.GetPower().SetXPosition(1000);
-      engine.GetPower().SetYPosition(1000);
+    if (engine.DidGetPotion(player, engine.power)) {
+      engine.power.SetXPosition(1000);
+      engine.power.SetYPosition(1000);
+      std::cout << engine.power.GetXPosition();
       is_invincible = true;
       start_potion_time = std::chrono::high_resolution_clock::now();
     }
@@ -206,19 +206,24 @@ void MyApp::DrawUser() {
             loadImage(loadAsset("running_ninja1.png")));
     if (ninja_counter == 2) {
         back_texture =
-                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja2.png")));
+                cinder::gl::Texture::create(ci::loadImage
+                (loadAsset("running_ninja2.png")));
     } else if (ninja_counter == 3) {
         back_texture =
-                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja3.png")));
+                cinder::gl::Texture::create(ci::loadImage
+                (loadAsset("running_ninja3.png")));
     } else if (ninja_counter == 4) {
         back_texture =
-                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja4.png")));
+                cinder::gl::Texture::create(ci::loadImage
+                (loadAsset("running_ninja4.png")));
     } else if (ninja_counter == 5) {
         back_texture =
-                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja5.png")));
+                cinder::gl::Texture::create(ci::loadImage
+                (loadAsset("running_ninja5.png")));
     } else if (ninja_counter == 6) {
         back_texture =
-                cinder::gl::Texture::create(ci::loadImage(loadAsset("running_ninja6.png")));
+                cinder::gl::Texture::create(ci::loadImage
+                (loadAsset("running_ninja6.png")));
     }
 
     if (ninja_counter < 6) {
@@ -453,10 +458,10 @@ void MyApp::DrawPotion() {
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
   cinder::gl::draw(back_texture,
-                   ci::Rectf({engine.GetPower().GetXPosition(),
-                              engine.GetPower().GetYPosition()},
-                             {engine.GetPower().GetXPosition() + 60,
-                              engine.GetPower().GetYPosition() + 45}));
+                   ci::Rectf({engine.power.GetXPosition(),
+                              engine.power.GetYPosition()},
+                             {engine.power.GetXPosition() + 60,
+                              engine.power.GetYPosition() + 45}));
 }
 
 

@@ -14,6 +14,7 @@ FlashMonster flash_monster;
 Board board_piece;
 
 
+
 TEST_CASE("Change Direction Correctly for Player") {
   user.SetXPosition(50);
   user.SetYPosition(50);
@@ -292,7 +293,7 @@ TEST_CASE("Check If Monster Moves In Correct Direction") {
   }
 }
 
-TEST_CASE("Change Fire Amount Based On Level") {
+TEST_CASE("Change Fire Number Based On Input Level") {
 
   SECTION("Correctly Identifies Easy Level") {
     bool is_correct_level = engine.DecideGameLevel(1) == 14;
@@ -314,3 +315,24 @@ TEST_CASE("Change Fire Amount Based On Level") {
     REQUIRE(is_correct_level);
   }
 }
+
+TEST_CASE("Check If Player Picked Up Potion") {
+  engine.power.SetXPosition(400);
+  engine.power.SetYPosition(400);
+
+  SECTION("Correctly Picks Up Potion") {
+    user.SetXPosition(400);
+    user.SetXPosition(400);
+    bool does_pick_up_potion = engine.DidGetPotion(user, engine.power);
+    REQUIRE(does_pick_up_potion);
+  }
+
+  SECTION("Correctly Does Not Pick Up Potion") {
+    user.SetXPosition(1);
+    user.SetXPosition(34);
+    bool does_not_pick_up_potion = !engine.DidGetPotion(user, engine.power);
+    REQUIRE(does_not_pick_up_potion);
+  }
+}
+
+

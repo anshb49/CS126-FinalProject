@@ -21,7 +21,6 @@ class Engine {
   const int kNumFireMedium = 20;
   const int kNumFireHard = 26;
 
-  InvinciblePower power;
 
  public:
   /**
@@ -70,11 +69,5 @@ class Engine {
    */
   bool DidGetPotion(Player player, InvinciblePower power);
 
-  /**
-   * Returns the power variable that is stored in this class
-   * @return - the power variable
-   */
-  InvinciblePower GetPower();
-
-
+  InvinciblePower power;
 };
