@@ -9,6 +9,25 @@ layout.
 Author: [Ansh Bhalla]
 
 ---
+
+**Dependencies**
+-
+- SQLite - 
+
+
+##Controls
+
+###Keyboard
+
+| Key | Action |
+| ---------------|----------------|
+|'Left Arrow Key |Move to the Left|
+|'Right Arrow Key |Move to the Right|
+|'Up Arrow Key   |Move Up|
+|'Left Arrow Key |Move Down|
+
+
+
 Escape is a game that will involve the main character, which the
 user will be controlling, and enemy monsters that will be
 chasing the main player. The goal of the game is for the player

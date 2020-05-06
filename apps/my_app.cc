@@ -11,57 +11,19 @@
 #include <algorithm>
 #include <chrono>
 #include <string>
-#include "cinder/audio/Voice.h"
-
-
-
-using std::chrono::duration_cast;
-using std::chrono::seconds;
-using std::chrono::system_clock;
 using cinder::TextBox;
 
-Player player((string&)"initial name", 0);
-Monster monster;
-FlashMonster flash_monster;
 Engine engine;
-//InvinciblePower power;
+Player player((string&)"a name", 0);
 
 const char kBoldFont[] = "Arial-BoldMT";
-bool should_start_time = true;
-bool is_burned = false;
-bool is_caught = false;
-bool is_invincible = false;
-int lava_counter = 1;
-int ninja_counter = 1;
-
-int previous_time = 0;
-int next_time = 15;
-bool did_add_score = false;
-const int kAmount = 3;
-bool printed_game_over = false;
-int flash_wait_counter = 0;
-
-cinder::audio::VoiceRef background_music;
-cinder::audio::SourceFileRef back_sound = cinder::audio::
-    load( cinder::app::loadAsset( "danger_song_short.m4a" ) );
-
-const string kInstructions = "Use the arrow keys to escape from the Monsters. "
-                             "Beware of the Flash Monster and the Fire!";
-const string kLoading = "Loading";
-const string kWelcome = "Welcome To Escape";
-const string kGetReady = "GET READY";
-int loading_counter = 1;
-int welcome_count = 0;
-const int kWelcomeTime = 10;
-
+const char kDbPath[] = "test_scoreboard.db";
 
 cinder::gl::Texture2dRef image;
 auto fire_end_img = loadImage(cinder::app::
     loadAsset("fire_gameover.png"));
-const char kDbPath[] = "test_scoreboard.db";
 std::chrono::high_resolution_clock::time_point t1 = std::chrono::
 high_resolution_clock::now();
-
 std::chrono::high_resolution_clock::time_point start_potion_time = std::chrono::
 high_resolution_clock::now();
 
@@ -103,7 +65,7 @@ void MyApp::setup() {
     }
     board_pieces.push_back(current_piece);
   }
-  monster_vector.push_back(monster);
+  monster_vector.push_back(engine.monster);
 
   background_music = cinder::audio::Voice::create(back_sound);
   background_music->start();
@@ -125,14 +87,13 @@ void MyApp::update() {
   }
 
   if (time == next_time) {
-      previous_time = next_time;
       next_time = next_time + 15;
       Monster new_monster;
       monster_vector.push_back(new_monster);
   }
 
   is_burned = engine.CheckIfBurned(player, board_pieces);
-  is_caught = engine.CheckIfCaught(player, monster_vector, flash_monster);
+  is_caught = engine.CheckIfCaught(player, monster_vector, engine.flash_monster);
   if ((is_burned || is_caught) && !did_add_score && is_invincible==false) {
     player.SetScore(time);
     leaderboard.AddScoreToLeaderBoard(user_name, player.GetMyScore());
@@ -156,7 +117,6 @@ void MyApp::draw() {
     if (engine.DidGetPotion(player, engine.power)) {
       engine.power.SetXPosition(1000);
       engine.power.SetYPosition(1000);
-      std::cout << engine.power.GetXPosition();
       is_invincible = true;
       start_potion_time = std::chrono::high_resolution_clock::now();
     }
@@ -165,11 +125,10 @@ void MyApp::draw() {
     DrawBackground();
     DrawTimer();
     DrawUser();
-    DrawBoard();
+    DrawFire();
     DrawMonster();
     DrawFlashMonster();
     DrawPotion();
-
   }
 }
 
@@ -248,7 +207,6 @@ void MyApp::DrawMonster() {
           ci::loadImage(loadAsset("monster_pic.png")));
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
-
   for (int i = 0; i < monster_vector.size(); i++) {
     monster_vector[i].MoveTowardsPlayer(player.GetXPosition(),
                                         player.GetYPosition());
@@ -267,27 +225,26 @@ void MyApp::DrawFlashMonster() {
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
   if (flash_wait_counter >= 20) {
-    flash_monster.ChangePosition();
-    if (abs(player.GetXPosition() - flash_monster.GetXPosition()) <= 40
-           && abs(player.GetYPosition() - flash_monster.GetYPosition()) <= 40) {
-      flash_monster.ChangePosition();
-      engine.FixFlashPosition(player, flash_monster);
+    engine.flash_monster.ChangePosition();
+    if (abs(player.GetXPosition() - engine.flash_monster.GetXPosition()) <= 40
+           && abs(player.GetYPosition() - engine.flash_monster.GetYPosition()) <= 40) {
+      engine.flash_monster.ChangePosition();
+      engine.FixFlashPosition(player, engine.flash_monster);
     }
-
     flash_wait_counter = 0;
   }
   flash_wait_counter++;
 
   cinder::gl::draw(back_texture,
-                   ci::Rectf({flash_monster.GetXPosition(),
-                              flash_monster.GetYPosition()},
-                             {flash_monster.GetXPosition() + 65,
-                              flash_monster.GetYPosition() + 65}));
+                   ci::Rectf({engine.flash_monster.GetXPosition(),
+                              engine.flash_monster.GetYPosition()},
+                             {engine.flash_monster.GetXPosition() + 65,
+                              engine.flash_monster.GetYPosition() + 65}));
 }
 
 
 
-void MyApp::DrawBoard() {
+void MyApp::DrawFire() {
   auto back_texture =
       cinder::gl::Texture::create(
           ci::loadImage(
@@ -403,32 +360,14 @@ void MyApp::DrawBackground() {
                                               0},
                                              {1000,
                                               1000}));
-
-    PrintText(kWelcome, color, size,
-        {center.x, center.y + (0) * 50});
-    PrintText(kInstructions, color, size, {center.x, center.y + (1) * 50});
-    PrintText(kGetReady, color, size, {center.x, center.y + (2) * 100});
-    PrintText(kLoading, color, size, {center.x, center.y + (3) * 100});
-
-    if (loading_counter == 1) {
-      PrintText("...", color, size,
-          {center.x + 70, center.y + (3) * 100});
-      loading_counter++;
-    } else if (loading_counter == 2) {
-      PrintText("....", color, size,
-          {center.x + 70, center.y + (3) * 100});
-      loading_counter++;
-    } else {
-      PrintText(".....", color, size,
-          {center.x + 70, center.y + (3) * 100});
-      loading_counter = 1;
-    }
+    PrintLoadingScreen();
     welcome_count++;
+
   } else {
     auto back_texture =
         cinder::gl::Texture::create(ci::
         loadImage(loadAsset("rock_texture.png")));
-    ci::gl::color(ci::ColorA(1, 1, 1, 1));
+    ci::gl::color(ci::ColorA(0.8, 0.8, 1, 1));
     cinder::gl::draw(back_texture, ci::Rectf({0,
                                               0},
                                              {800,
@@ -464,6 +403,33 @@ void MyApp::DrawPotion() {
                               engine.power.GetYPosition() + 45}));
 }
 
+void MyApp::PrintLoadingScreen() {
+  const cinder::vec2 center = getWindowCenter();
+  const cinder::ivec2 size = {800, 200};
+  const cinder::Color color = cinder::Color::white();
 
+  PrintText(kWelcome, color, size,
+            {center.x, center.y + (0) * 50});
+  PrintText(kInstructions, color, size,
+            {center.x, center.y + (1) * 50});
+  PrintText(kGetReady, color, size,
+            {center.x, center.y + (2) * 100});
+  PrintText(kLoading, color, size,
+            {center.x, center.y + (3) * 100});
+
+  if (loading_counter == 1) {
+    PrintText("...", color, size,
+              {center.x + 70, center.y + (3) * 100});
+    loading_counter++;
+  } else if (loading_counter == 2) {
+    PrintText("....", color, size,
+              {center.x + 70, center.y + (3) * 100});
+    loading_counter++;
+  } else {
+    PrintText(".....", color, size,
+              {center.x + 70, center.y + (3) * 100});
+    loading_counter = 1;
+  }
+}
 
 }

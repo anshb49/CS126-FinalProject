@@ -5,14 +5,7 @@
 
 #include <MacTypes.h>
 #include <sqlite_modern_cpp.h>
-
 #include <iostream>
-
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
-
 #include "mylibrary/player.h"
 
 bool is_playing = true;
@@ -35,7 +28,6 @@ void Player::MoveLeft() {
 
 void Player::MoveUp() {
   current_y = current_y - 15;
-
 
   if (current_y <= -25) {
     current_y = current_y + 15;

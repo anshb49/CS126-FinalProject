@@ -6,6 +6,7 @@
 #define FINALPROJECT_ENGINE_H
 #include <vector>
 #include <cstdlib>
+#include <string>
 
 #include "mylibrary/monster.h"
 #include "mylibrary/player.h"
@@ -70,4 +71,6 @@ class Engine {
   bool DidGetPotion(Player player, InvinciblePower power);
 
   InvinciblePower power;
+  Monster monster;
+  FlashMonster flash_monster;
 };

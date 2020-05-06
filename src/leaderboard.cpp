@@ -18,7 +18,6 @@ LeaderBoard::LeaderBoard(const string& db_path) : db_{db_path} {
 }
 
 void LeaderBoard::AddScoreToLeaderBoard(string name, int score) {
-  // TODO(you): Add your query here.
   string player_name = name;
   int player_score = score;
   db_ << "insert into leaderboard (name,score) values (?,?);"
@@ -37,9 +36,7 @@ vector<Player> GetPlayers(sqlite::database_binder* rows) {
     Player player = {name, 200};
     players.push_back(player);
   }
-
   return players;
-
 }
 
 vector<int> LeaderBoard::RetrieveHighScores(const size_t limit) {
@@ -53,7 +50,6 @@ vector<int> LeaderBoard::RetrieveHighScores(const size_t limit) {
     row >> score;
     player_scores.push_back(score);
   }
-
   return player_scores;
 }
 
@@ -67,7 +63,6 @@ vector<string> LeaderBoard::RetrieveHighNames(const size_t limit) {
     row >> name;
     player_names.push_back(name);
   }
-
   return player_names;
 }
 

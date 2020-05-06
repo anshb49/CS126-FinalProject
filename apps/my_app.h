@@ -4,9 +4,16 @@
 #define FINALPROJECT_APPS_MYAPP_H_
 
 #include <cinder/app/App.h>
+#include "cinder/audio/Voice.h"
+
 #include "mylibrary/leaderboard.h"
 #include "mylibrary/player.h"
 #include "mylibrary/engine.h"
+
+
+using std::chrono::duration_cast;
+using std::chrono::seconds;
+using std::chrono::system_clock;
 
 namespace myapp {
 
@@ -52,7 +59,7 @@ class MyApp : public cinder::app::App {
    * Draws the game screen with the fire pieces using the pieces vector
    * along with each pieces X and Y position
    */
-  void DrawBoard();
+  void DrawFire();
 
   /**
    * Creates the monster on the board using the monster vector and also using
@@ -89,12 +96,46 @@ class MyApp : public cinder::app::App {
    */
   void DrawPotion();
 
+  /**
+   *
+   */
+  void PrintLoadingScreen();
+
  private:
   LeaderBoard leaderboard;
   const std::string user_name;
   const size_t game_level;
   std::vector<int> top_player_scores;
   std::vector<std::string> top_player_names;
+
+  bool should_start_time = true;
+  bool is_burned = false;
+  bool is_caught = false;
+  bool is_invincible = false;
+
+  int lava_counter = 1;
+  int ninja_counter = 1;
+  int flash_wait_counter = 0;
+  int loading_counter = 1;
+  int welcome_count = 0;
+
+  int next_time = 15;
+  bool did_add_score = false;
+  bool printed_game_over = false;
+  const int kAmount = 3;
+  const int kWelcomeTime = 200;
+
+  cinder::audio::VoiceRef background_music;
+  cinder::audio::SourceFileRef back_sound = cinder::audio::
+  load( cinder::app::loadAsset( "danger_song_short.m4a" ) );
+
+  const string kInstructions = "Use the arrow keys to escape from the Monsters. "
+                               "Beware of the Flash Monster and the Fire!";
+  const string kLoading = "Loading";
+  const string kWelcome = "Welcome To Escape";
+  const string kGetReady = "GET READY";
+
+
 };
 
 }  // namespace myapp

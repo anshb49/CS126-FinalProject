@@ -10,7 +10,7 @@
 
 class InvinciblePower {
  private:
-  int current_x = (rand() % 775) + 300;
+  int current_x = (rand() % 775) + 100;
   int current_y = (rand() % 775) + 1;
 
  public:
