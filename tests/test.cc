@@ -1,18 +1,15 @@
 // Copyright (c) 2020 CS126SP20. All rights reserved.
 
 #define CATCH_CONFIG_MAIN
-
 #include <catch2/catch.hpp>
 #include <mylibrary/engine.h>
 #include <mylibrary/player.h>
-
 
 Player user((std::string&)"initial name", 0);;
 Monster monster;
 Engine engine;
 FlashMonster flash_monster;
 Board board_piece;
-
 
 
 TEST_CASE("Change Direction Correctly for Player") {
@@ -83,7 +80,6 @@ TEST_CASE("Check Correct Speed for Monster") {
     bool is_different_speed = monster1.GetSpeed() != monster2.GetSpeed();
     REQUIRE(is_different_speed);
   }
-
 }
 
 
@@ -145,11 +141,10 @@ TEST_CASE("Check If Stayed Within Board") {
 
 TEST_CASE("Checks If Monsters Caught Player") {
   std::vector<Monster> monster_vector;
+  user.SetXPosition(775);
+  user.SetYPosition(790);
 
   SECTION("Normal Monster Did Catch Player") {
-    user.SetXPosition(775);
-    user.SetYPosition(790);
-
     monster.SetXPosition(770);
     monster.SetYPosition(785);
     monster_vector.push_back(monster);
@@ -160,8 +155,9 @@ TEST_CASE("Checks If Monsters Caught Player") {
   }
 
   SECTION("Flash Monster Did Catch Player") {
-    user.SetXPosition(775);
-    user.SetYPosition(790);
+    monster.SetXPosition(770);
+    monster.SetYPosition(785);
+    monster_vector.push_back(monster);
 
     flash_monster.SetXPosition(770);
     flash_monster.SetYPosition(785);
@@ -171,11 +167,16 @@ TEST_CASE("Checks If Monsters Caught Player") {
     REQUIRE(did_catch_player);
   }
 
+  SECTION("Check If Both Monsters Catch Player") {
+    flash_monster.SetXPosition(770);
+    flash_monster.SetYPosition(785);
+    bool did_catch_player = engine.CheckIfCaught(user,
+        monster_vector, flash_monster);
+    REQUIRE(did_catch_player);
+  }
+
   SECTION("Normal Monster Did Not Catch Player") {
     monster_vector.clear();
-
-    user.SetXPosition(775);
-    user.SetYPosition(790);
 
     monster.SetXPosition(1);
     monster.SetYPosition(1);
@@ -190,9 +191,6 @@ TEST_CASE("Checks If Monsters Caught Player") {
   }
 
   SECTION("Flash Monster Did Not Catch Player") {
-    user.SetXPosition(775);
-    user.SetYPosition(790);
-
     flash_monster.SetXPosition(8);
     flash_monster.SetYPosition(8);
 
@@ -236,7 +234,7 @@ TEST_CASE("Check If Player Burned") {
 }
 
 
-TEST_CASE("Check If Correct FlashMonster Position") {
+TEST_CASE("Check Correct FlashMonster Position") {
   user.SetXPosition(400);
   user.SetYPosition(400);
 
@@ -248,6 +246,17 @@ TEST_CASE("Check If Correct FlashMonster Position") {
 
     bool did_change_position = flash_monster.GetXPosition() != 400
         && flash_monster.GetYPosition() != 400;
+    REQUIRE(did_change_position);
+  }
+
+  SECTION("Should Not Change Position") {
+    FlashMonster flash2;
+    flash2.SetXPosition(800);
+    flash2.SetYPosition(800);
+    engine.FixFlashPosition(user, flash2);
+
+    bool did_change_position = flash2.GetXPosition() == 800
+                               && flash2.GetYPosition() == 800;
     REQUIRE(did_change_position);
   }
 }

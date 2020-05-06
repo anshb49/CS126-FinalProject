@@ -20,7 +20,7 @@ in different video games. Also, I will be able to come back
 to this game later on, and possibly even improve it more with
 new skills I learn in the future.
 
-The library I plan on using is the SQL library. With this library,
+The library I plan on using is the SQLite library. With this library,
 I can keep track of the scores of all players that have played this 
 game. This way, I can create a leaderboard in the game over screen, add 
 the current player's score into the leaderboard as well.

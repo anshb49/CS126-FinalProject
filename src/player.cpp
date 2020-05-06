@@ -3,12 +3,8 @@
 //
 //#include <conio.h>
 
-#include <MacTypes.h>
-#include <sqlite_modern_cpp.h>
 #include <iostream>
 #include "mylibrary/player.h"
-
-bool is_playing = true;
 
 void Player::MoveRight() {
   current_x = current_x + 15;

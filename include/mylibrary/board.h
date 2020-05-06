@@ -17,8 +17,8 @@
 class Board {
 
  private:
-  int x = (rand() % 780) + 50;
-  int y = (rand() % 780) + 10;
+  int x = (rand() % 780) + 100;
+  int y = (rand() % 780) + 20;
 
  public:
   /**

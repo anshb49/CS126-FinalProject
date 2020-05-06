@@ -1,4 +1,4 @@
-// Copyright (c) 2020 [Your Name]. All rights reserved.
+// Copyright (c) 2020 [Ansh Bhalla]. All rights reserved.
 
 #include "my_app.h"
 #include <cinder/app/App.h>
@@ -15,7 +15,6 @@ using cinder::TextBox;
 
 Engine engine;
 Player player((string&)"a name", 0);
-
 const char kBoldFont[] = "Arial-BoldMT";
 const char kDbPath[] = "test_scoreboard.db";
 
@@ -31,11 +30,6 @@ high_resolution_clock::now();
 namespace myapp {
 
 using cinder::app::KeyEvent;
-vector<Board> board_pieces;
-vector<Monster> monster_vector;
-int current_game_level = 0;
-
-
 DECLARE_string(name);
 DECLARE_uint32(level);
 
@@ -49,15 +43,15 @@ void MyApp::setup() {
   monster_vector.clear();
   board_pieces.clear();
 
-  for (int i = 0; i < current_game_level; i++) {
+  for (size_t i = 0; i < current_game_level; ++i) {
     Board current_piece;
     bool is_on_player = current_piece.GetXPos() <= 15
         || (current_piece.GetYPos() >= 375 && current_piece.GetYPos() <= 415);
+
     if (is_on_player) {
       current_piece.SetXPos(rand() % 750 + 40);
       current_piece.SetXPos(rand() % 750 + 30);
     }
-
     while (abs(engine.power.GetXPosition() - current_piece.GetXPos()) <= 15
     && abs(engine.power.GetYPosition() - current_piece.GetYPos()) <= 15) {
       engine.power.SetXPosition(engine.power.GetRandomPosition());
@@ -81,7 +75,6 @@ void MyApp::update() {
   int time = time_span.count();
   int potion_time = potion_span.count();
 
-
   if (potion_time >= 7) {
     is_invincible = false;
   }
@@ -93,8 +86,9 @@ void MyApp::update() {
   }
 
   is_burned = engine.CheckIfBurned(player, board_pieces);
-  is_caught = engine.CheckIfCaught(player, monster_vector, engine.flash_monster);
-  if ((is_burned || is_caught) && !did_add_score && is_invincible==false) {
+  is_caught = engine.CheckIfCaught(player, monster_vector,
+      engine.flash_monster);
+  if ((is_burned || is_caught) && !did_add_score && !is_invincible) {
     player.SetScore(time);
     leaderboard.AddScoreToLeaderBoard(user_name, player.GetMyScore());
     did_add_score = true;
@@ -106,8 +100,9 @@ void MyApp::draw() {
   if (welcome_count <= kWelcomeTime) {
     cinder::gl::clear();
     DrawBackground();
+
   } else {
-    if ((is_burned || is_caught) && is_invincible==false) {
+    if ((is_burned || is_caught) && !is_invincible) {
       top_player_scores = leaderboard.RetrieveHighScores(kAmount);
       top_player_names = leaderboard.RetrieveHighNames(kAmount);
       DrawGameOverScreen();
@@ -133,7 +128,7 @@ void MyApp::draw() {
 }
 
 void MyApp::keyDown(KeyEvent event) {
-  if ((is_burned || is_caught) && is_invincible==false) {
+  if ((is_burned || is_caught) && !is_invincible) {
     return;
   }
   switch (event.getCode()) {
@@ -160,45 +155,46 @@ void MyApp::DrawUser() {
   if ((is_burned || is_caught) && is_invincible==false) {
     return;
   }
-  auto back_texture =
-            cinder::gl::Texture::create(ci::
-            loadImage(loadAsset("running_ninja1.png")));
-    if (ninja_counter == 2) {
-        back_texture =
-                cinder::gl::Texture::create(ci::loadImage
-                (loadAsset("running_ninja2.png")));
-    } else if (ninja_counter == 3) {
-        back_texture =
-                cinder::gl::Texture::create(ci::loadImage
-                (loadAsset("running_ninja3.png")));
-    } else if (ninja_counter == 4) {
-        back_texture =
-                cinder::gl::Texture::create(ci::loadImage
-                (loadAsset("running_ninja4.png")));
-    } else if (ninja_counter == 5) {
-        back_texture =
-                cinder::gl::Texture::create(ci::loadImage
-                (loadAsset("running_ninja5.png")));
-    } else if (ninja_counter == 6) {
-        back_texture =
-                cinder::gl::Texture::create(ci::loadImage
-                (loadAsset("running_ninja6.png")));
-    }
 
-    if (ninja_counter < 6) {
-      ninja_counter++;
-    } else {
-      ninja_counter = 1;
-    }
+  auto back_texture =
+      cinder::gl::Texture::create(ci::
+      loadImage(loadAsset("running_ninja1.png")));
+  if (ninja_counter == 2) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage
+        (loadAsset("running_ninja2.png")));
+  } else if (ninja_counter == 3) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage
+        (loadAsset("running_ninja3.png")));
+  } else if (ninja_counter == 4) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage
+        (loadAsset("running_ninja4.png")));
+  } else if (ninja_counter == 5) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage
+        (loadAsset("running_ninja5.png")));
+  } else if (ninja_counter == 6) {
+    back_texture =
+        cinder::gl::Texture::create(ci::loadImage
+        (loadAsset("running_ninja6.png")));
+  }
+
+  if (ninja_counter < 6) {
+    ninja_counter++;
+  } else {
+    ninja_counter = 1;
+  }
 
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
-    if (is_invincible) {
-      ci::gl::color(ci::ColorA(0, 0.8, 1, 90));
-    }
-    cinder::gl::draw(back_texture, ci::Rectf({player.GetXPosition(),
-                                              player.GetYPosition()},
-                                             {player.GetXPosition() + 100,
-                                              player.GetYPosition() + 100}));
+  if (is_invincible) {
+    ci::gl::color(ci::ColorA(0, 0.8, 1, 90));
+  }
+  cinder::gl::draw(back_texture, ci::Rectf({player.GetXPosition(),
+                                            player.GetYPosition()},
+                                           {player.GetXPosition() + 100,
+                                            player.GetYPosition() + 100}));
 }
 
 void MyApp::DrawMonster() {
@@ -207,14 +203,14 @@ void MyApp::DrawMonster() {
           ci::loadImage(loadAsset("monster_pic.png")));
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
-  for (int i = 0; i < monster_vector.size(); i++) {
-    monster_vector[i].MoveTowardsPlayer(player.GetXPosition(),
+  for (auto & i : monster_vector) {
+    i.MoveTowardsPlayer(player.GetXPosition(),
                                         player.GetYPosition());
     cinder::gl::draw(back_texture,
-                     ci::Rectf({monster_vector[i].GetXPosition(),
-                                monster_vector[i].GetYPosition()},
-                               {monster_vector[i].GetXPosition() + 65,
-                                monster_vector[i].GetYPosition() + 65}));
+                     ci::Rectf({i.GetXPosition(),
+                                i.GetYPosition()},
+                               {i.GetXPosition() + 65,
+                                i.GetYPosition() + 65}));
   }
 }
 
@@ -279,11 +275,11 @@ void MyApp::DrawFire() {
   }
 
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
-  for (int i = 0; i < board_pieces.size(); i++) {
-    cinder::gl::draw(back_texture, ci::Rectf({board_pieces[i].GetXPos(),
-                                             board_pieces[i].GetYPos()},
-                                             {board_pieces[i].GetXPos() + 75.0,
-                                             board_pieces[i].GetYPos() + 75.0}));
+  for (auto & board_piece : board_pieces) {
+    cinder::gl::draw(back_texture, ci::Rectf({board_piece.GetXPos(),
+                                             board_piece.GetYPos()},
+                                             {board_piece.GetXPos() + 75.0,
+                                             board_piece.GetYPos() + 75.0}));
   }
 }
 
@@ -328,7 +324,6 @@ void MyApp::DrawGameOverScreen() {
   PrintText("YOUR SCORE: " + std::to_string(player.GetMyScore()),
       color, size, {center.x, center.y - (1) * 50});
 
-
   size_t row = 0;
   PrintText("Top Scores:", color, size,
       {center.x, center.y + 50 + ++row * 50});
@@ -350,7 +345,6 @@ void MyApp::DrawBackground() {
   if (welcome_count <= kWelcomeTime) {
     const cinder::vec2 center = getWindowCenter();
     const cinder::ivec2 size = {800, 200};
-    const cinder::Color color = cinder::Color::white();
 
     auto back_texture =
         cinder::gl::Texture::create(ci::

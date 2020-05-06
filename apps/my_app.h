@@ -123,19 +123,21 @@ class MyApp : public cinder::app::App {
   bool did_add_score = false;
   bool printed_game_over = false;
   const int kAmount = 3;
-  const int kWelcomeTime = 200;
+  const int kWelcomeTime = 150;
 
   cinder::audio::VoiceRef background_music;
   cinder::audio::SourceFileRef back_sound = cinder::audio::
   load( cinder::app::loadAsset( "danger_song_short.m4a" ) );
 
-  const string kInstructions = "Use the arrow keys to escape from the Monsters. "
+  const string kInstructions = "Use the arrow keys to escape from the Monsters! "
                                "Beware of the Flash Monster and the Fire!";
   const string kLoading = "Loading";
   const string kWelcome = "Welcome To Escape";
   const string kGetReady = "GET READY";
 
-
+  vector<Board> board_pieces;
+  vector<Monster> monster_vector;
+  int current_game_level = 0;
 };
 
 }  // namespace myapp

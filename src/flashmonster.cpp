@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 void FlashMonster::ChangePosition() {
-  current_x = (rand() % 800) + 1;
+  current_x = (rand() % 800) + 100;
   current_y = rand() % 800 + 1;
 }
 
