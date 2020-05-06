@@ -21,6 +21,7 @@ class Engine {
   const int kNumFireMedium = 20;
   const int kNumFireHard = 26;
 
+  InvinciblePower power;
 
  public:
   /**
@@ -51,10 +52,29 @@ class Engine {
    */
   void FixFlashPosition(Player current_player, FlashMonster flash_monster);
 
+  /**
+   * Based on what the user inputted, returns the number of positions of the fire
+   * to be displayed as that is what differs between levels.
+   * @param level - the input level through program arguments
+   * @return - a number based on the constants that match the game level. If it is
+   * invalid, returns the easy constant value.
+   */
   int DecideGameLevel(int level);
 
+  /**
+   * Based on the player location and the potion location, checks if the player
+   * came in contact with the potion.
+   * @param player - the current player in the game
+   * @param power - the potion that stores location
+   * @return - true if the player picked up the potion, otherwise false
+   */
   bool DidGetPotion(Player player, InvinciblePower power);
 
-  InvinciblePower power;
+  /**
+   * Returns the power variable that is stored in this class
+   * @return - the power variable
+   */
+  InvinciblePower GetPower();
+
 
 };

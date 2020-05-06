@@ -96,10 +96,10 @@ void MyApp::setup() {
       current_piece.SetXPos(rand() % 750 + 30);
     }
 
-    while (abs(engine.power.GetXPosition() - current_piece.GetXPos()) <= 15
-    && abs(engine.power.GetYPosition() - current_piece.GetYPos()) <= 15) {
-      engine.power.SetXPosition(engine.power.ChangePosition());
-      engine.power.SetYPosition(engine.power.ChangePosition());
+    while (abs(engine.GetPower().GetXPosition() - current_piece.GetXPos()) <= 15
+    && abs(engine.GetPower().GetYPosition() - current_piece.GetYPos()) <= 15) {
+      engine.GetPower().SetXPosition(engine.GetPower().GetRandomPosition());
+      engine.GetPower().SetYPosition(engine.GetPower().GetRandomPosition());
     }
     board_pieces.push_back(current_piece);
   }
@@ -134,7 +134,6 @@ void MyApp::update() {
 
   is_burned = engine.CheckIfBurned(player, board_pieces);
   is_caught = engine.CheckIfCaught(player, monster_vector, flash_monster);
-  std::cout << is_invincible;
   if ((is_burned || is_caught) && !did_add_score && is_invincible==false) {
     player.SetScore(time);
     leaderboard.AddScoreToLeaderBoard(user_name, player.GetMyScore());
@@ -144,7 +143,6 @@ void MyApp::update() {
 }
 
 void MyApp::draw() {
-
   if (welcome_count <= kWelcomeTime) {
     cinder::gl::clear();
     DrawBackground();
@@ -156,9 +154,9 @@ void MyApp::draw() {
       return;
     }
 
-    if (engine.DidGetPotion(player, engine.power)) {
-      engine.power.SetXPosition(1000);
-      engine.power.SetYPosition(1000);
+    if (engine.DidGetPotion(player, engine.GetPower())) {
+      engine.GetPower().SetXPosition(1000);
+      engine.GetPower().SetYPosition(1000);
       is_invincible = true;
       start_potion_time = std::chrono::high_resolution_clock::now();
     }
@@ -455,10 +453,10 @@ void MyApp::DrawPotion() {
   ci::gl::color(ci::ColorA(1, 1, 1, 1));
 
   cinder::gl::draw(back_texture,
-                   ci::Rectf({engine.power.GetXPosition(),
-                              engine.power.GetYPosition()},
-                             {engine.power.GetXPosition() + 60,
-                              engine.power.GetYPosition() + 45}));
+                   ci::Rectf({engine.GetPower().GetXPosition(),
+                              engine.GetPower().GetYPosition()},
+                             {engine.GetPower().GetXPosition() + 60,
+                              engine.GetPower().GetYPosition() + 45}));
 }
 
 

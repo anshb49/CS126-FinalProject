@@ -57,3 +57,7 @@ bool Engine::DidGetPotion(Player player, InvinciblePower power) {
             && abs(player.GetYPosition() - power.GetYPosition()) <= 40;
   return did_get_potion;
 }
+
+InvinciblePower Engine::GetPower() {
+    return power;
+}

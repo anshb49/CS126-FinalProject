@@ -5,7 +5,7 @@
 #include "mylibrary/invincible_power.h"
 
 
-int InvinciblePower::ChangePosition() {
+int InvinciblePower::GetRandomPosition() {
   return (rand() % 775) + 1;
 }
 
