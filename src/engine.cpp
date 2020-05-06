@@ -53,8 +53,7 @@ int Engine::DecideGameLevel(int game_level) {
 }
 
 bool Engine::DidGetPotion(Player player, InvinciblePower power) {
-
-  if (abs(player.GetXPosition() - power.GetXPosition()) <= 40 && abs(player.GetYPosition() - power.GetYPosition()) <= 40) {
-    return true;
-  }
+    bool did_get_potion = abs(player.GetXPosition() - power.GetXPosition()) <= 40
+            && abs(player.GetYPosition() - power.GetYPosition()) <= 40;
+  return did_get_potion;
 }

@@ -84,9 +84,9 @@ class MyApp : public cinder::app::App {
    */
   void DrawGameOverScreen();
 
-
-
-
+  /**
+   * Draws the potion on the screen based on the potion's current location.
+   */
   void DrawPotion();
 
  private:

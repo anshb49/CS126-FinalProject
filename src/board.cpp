@@ -12,10 +12,10 @@ int Board::GetYPos() {
   return y;
 }
 
-int Board::SetXPos(int new_loc) {
+void Board::SetXPos(int new_loc) {
   x = new_loc;
 }
 
-int Board::SetYPos(int new_loc) {
+void Board::SetYPos(int new_loc) {
   y = new_loc;
 }

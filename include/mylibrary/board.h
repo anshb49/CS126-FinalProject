@@ -21,9 +21,28 @@ class Board {
   int y = (rand() % 780) + 1;
 
  public:
+  /**
+   * Gets the X position of the current piece of the board
+   * @return - the x position
+   */
   int GetXPos();
+
+  /**
+   * Gets the Y position of the current piece of the board
+   * @return - the y position
+   */
   int GetYPos();
-  int SetXPos(int new_loc);
-  int SetYPos(int new_loc);
+
+  /**
+   * Sets the current x position to a new x position
+   * @param new_loc - the new x position
+   */
+  void SetXPos(int new_loc);
+
+  /**
+   * Sets the current y position to a new y position
+   * @param new_loc - the new y position
+   */
+  void SetYPos(int new_loc);
 
 };
