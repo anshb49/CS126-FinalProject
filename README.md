@@ -7,7 +7,7 @@
 Author: [Ansh Bhalla]
 
 ---
-![image](/Users/bhalla/Downloads/cinder_0.9.2_mac/my-projects/final-project-anshbhalla/assets/game_gif.gif)
+![image](assets/game_gif.gif)
 
 **How To Play**
 -
