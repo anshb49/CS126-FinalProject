@@ -16,7 +16,7 @@ Author: [Ansh Bhalla]
 - There is a shield potion that makes you invincible for a certain amount of time 
 ![image](assets/Screen Shot 2020-05-06 at 3.47.08 PM.png)
 - After you come in contact with the fire or monster, the game ends
-![image](assets/Screen Shot 2020-05-06 at 3.44.27 PM.png)
+![image](assets/gameEND.png)
 
 **Dependencies**
 -
