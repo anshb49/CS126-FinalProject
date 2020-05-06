@@ -37,7 +37,6 @@ bool Engine::CheckIfBurned(Player current_player, std::vector<Board> pieces) {
 }
 
 void Engine::FixFlashPosition(Player current_player, FlashMonster flash_monster) {
-
   while (abs(current_player.GetXPosition() - flash_monster.GetXPosition()) <= 40
       && abs(current_player.GetYPosition() - flash_monster.GetYPosition()) <= 40) {
     flash_monster.ChangePosition();
