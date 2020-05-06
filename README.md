@@ -14,7 +14,7 @@ Author: [Ansh Bhalla]
 - Use the arrow keys to control the player after you get 
 - Any contact with the monsters will or fire will cause you to lose the game
 - There is a shield potion that makes you invincible for a certain amount of time 
-![image](assets/Screen Shot 2020-05-06 at 3.47.08 PM.png)
+![image](assets/ShieldPIC.png)
 - After you come in contact with the fire or monster, the game ends
 ![image](assets/gameEND.png)
 
