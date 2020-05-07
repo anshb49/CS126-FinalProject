@@ -21,7 +21,10 @@ Author: [Ansh Bhalla]
 -
 - [SQLite](https://github.com/SqliteModernCpp/sqlite_modern_cpp/tree/dev)
   - This is used to create a leaderboard for the game and keep track
-  of each player's score, along with displaying the top scores
+  of each player's score, along with displaying the top scores.
+- [GFlags](https://github.com/gflags/gflags)
+  - Used to take in the player's name and desired level using
+  the program arguments
  
 **How To Setup**  
 -
@@ -43,7 +46,7 @@ my-projects in the downloaded cinder file
 - In this case, Edit configurations -> Executable -> Select Other -> 
 Find my-projects/my-app/cmake-build-debug/Debug/cinder-myapp/Contents/MacOS/cinder-myapp And click run once again.
 
-**Gflags arguments**
+**Gflags Arguments**
 -
 - These are the program arguments to enter your name, and even change the level
 - To do this, go to, Edit configurations -> Program Arguments and enter (for example):
